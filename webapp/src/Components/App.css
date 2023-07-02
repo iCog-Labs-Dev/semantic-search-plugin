@@ -1,0 +1,30 @@
+.ss-container {
+  position: fixed;
+  z-index: 1000;
+  top:0;
+  left:0;
+  right:0;
+  bottom:0;
+}
+
+.ss-container .ss-container-bg {
+  position: absolute;
+  top:0;
+  left:0;
+  width: 100%;
+  height:100%;
+  background:rgba(0,0,0,0.5)
+}
+.ss-container .ss-container-modal {
+  position: absolute;
+  top:10%;
+  left:20%;
+  width:60%;
+  padding:1rem 2rem;
+  border-radius: 10px;
+  background:white;
+  padding-bottom:10rem;
+}
+.ss-hidden{
+  display: none;
+}

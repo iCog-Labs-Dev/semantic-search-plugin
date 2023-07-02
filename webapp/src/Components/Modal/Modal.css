@@ -1,0 +1,36 @@
+/* *{
+    border:1px solid red;
+} */
+.ss-search-con{
+    display:flex;
+
+}
+.ss-search-input {
+    width:calc(100% - 7rem);
+    padding: 1rem 1rem;
+    font-size: 1.2rem;
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+    border:1px solid rgba(0,0,0,0.5);
+}
+.ss-search-button {
+    padding:0rem 1.5rem;
+    background:rgba(0,0,0,0.1);
+    border:1px solid rgba(0,0,0,0.5);
+}
+.ss-content-con{
+    margin-top:5rem;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+}
+.ss-undraw1{
+    width:20rem;
+    align-self: center;
+}
+.ss-undraw1-des{
+    align-self: center;
+}
+.ss-hidden {
+    display: none;
+}
