@@ -17,6 +17,10 @@ export default class Plugin {
         // @see https://developers.mattermost.com/extend/plugins/webapp/reference/
         registry.registerChannelHeaderButtonAction(<Icon/>, ()=>al(window), 'Hello World');
         registry.registerGlobalComponent(App);
+        console.log("heyyy");
+        
+        console.log(store);
+        
     }
 }
 
