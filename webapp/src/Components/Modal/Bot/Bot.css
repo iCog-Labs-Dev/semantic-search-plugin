@@ -1,0 +1,62 @@
+.Bot-text{
+    font-size:1.6rem;
+    font-weight:600;
+}
+.Bot-context-con{
+    background:rgba(0,0,0,0.025);
+    margin:2rem 0;
+    padding:1rem 2rem;
+    border-radius: 10px;
+}
+.Bot-context-top{
+    display:flex;
+    flex-direction: row;
+    justify-content: space-between;
+    height:6rem;
+}
+.Bot-context-user{
+    height:3rem;
+    display: flex;
+    flex-direction: row;
+}
+.Bot-context-left{
+    width:4rem;
+    height:4rem;
+    margin-left:1rem
+}
+.Bot-context-left span{
+    background:rgb(219, 218, 190);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height:4rem;
+    border-radius: 50%;
+    font-size: 2rem;
+    font-weight: bold;
+}
+.Bot-goto{
+    color:var(--link-color);
+    cursor: pointer;
+}
+.Bot-context-right{
+    padding: 0rem 1rem;
+}
+.Bot-context-right div{
+    font-size: 1.6rem;
+    font-weight: bold;
+}
+.Bot-context-right span{
+    color:#686868;
+}
+.Bot-context-middle{
+    padding-left:6rem;
+    font-size:1.6rem;
+    margin-bottom:1.5rem
+}
+.Bot-context-bottom{
+    padding-left:6rem;
+    color:#686868;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}

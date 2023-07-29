@@ -1,0 +1,15 @@
+.Me-con {
+    display:flex;
+    flex-direction: row;
+    justify-content: right;
+}
+.Me-con .Me-text {
+    padding:2rem;
+    margin:1rem;
+    background:rgba(17, 36, 112, 0.176);
+    border-radius: 10px;
+    border-bottom-right-radius: 0;
+    font-size:1.5rem;
+    font-weight: 600;
+    margin-bottom:2rem;
+}

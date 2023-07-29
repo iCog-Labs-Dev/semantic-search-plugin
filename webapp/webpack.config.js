@@ -98,7 +98,7 @@ const config = {
 };
 
 if (isDev) {
-    Object.assign(config, { devtool: 'eval-source-map' });
+    Object.assign(config, {devtool: 'eval-source-map'});
 }
 
 module.exports = config;

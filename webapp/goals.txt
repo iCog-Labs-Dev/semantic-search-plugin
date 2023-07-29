@@ -1,5 +1,0 @@
-Short term
-    - Build a demo plugin for mattermost
-    - Find a reliable question answering model from hugging face that can answer questions from context
-Long term
-    - Graduate with a 4.0 by 2026
