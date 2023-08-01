@@ -3,11 +3,13 @@ import './Modal.css'
 import Empty from './Empty/Empty';
 import Me from './Me/Me';
 import Bot from './Bot/Bot';
+import Loader from './Loader/Loader';
 
 function Modal() {
     const [conversation, setConversation] = useState<any>([]);
     const [input,setInput] = useState('')
     const [apiURL, setApiURL] = useState('https://3c72-104-198-14-94.ngrok-free.app')
+    const [loading,setLoading] = useState(false)
 
     useEffect(() => {
         const api = prompt('Search engine URL:')
@@ -19,6 +21,7 @@ function Modal() {
         const newData = [...conversation,{me:true,text:input}]
         setConversation(newData)
         setInput('')
+        setLoading(true)
         fetch(apiURL!, {
             method: 'POST',
             headers: {
@@ -28,6 +31,7 @@ function Modal() {
                 "query": query
             })
         }).then(e=>e.json()).then(res=>{
+            setLoading(false)
             if(res){
                 setConversation([...newData,{me:false,text:res.response,context:res.metadata}])
             }else{
@@ -54,6 +58,7 @@ function Modal() {
                         return <Bot msg={c}/>
                     })
                     : <Empty />}
+                <Loader loading={loading}/>
             </div>
         </div>
     )
