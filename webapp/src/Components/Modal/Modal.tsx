@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './Modal.css'
 import Empty from './Empty/Empty';
 import Me from './Me/Me';
@@ -7,12 +7,27 @@ import Bot from './Bot/Bot';
 function Modal() {
     const [conversation, setConversation] = useState<any>([]);
     const [input,setInput] = useState('')
+    const [apiURL, setApiURL] = useState('https://3c72-104-198-14-94.ngrok-free.app')
+
+    useEffect(() => {
+        const api = prompt('Search engine URL:')
+        setApiURL(api!)
+    },[])
+
     const handleSubmit = () => {
         const query = input
         const newData = [...conversation,{me:true,text:input}]
         setConversation(newData)
         setInput('')
-        fetch('https://8237-34-143-188-216.ngrok-free.app?query=' + query).then(e=>e.json()).then(res=>{
+        fetch(apiURL!, {
+            method: 'POST',
+            headers: {
+                "Content-Type" : "application/json"
+            },
+            body: JSON.stringify({
+                "query": query
+            })
+        }).then(e=>e.json()).then(res=>{
             if(res){
                 setConversation([...newData,{me:false,text:res.response,context:res.metadata}])
             }else{
@@ -20,6 +35,7 @@ function Modal() {
             }
         }).catch(e=>console.log(e))
     }
+
     return (
         <div className={`ss-modal-con`}>
             <div className='ss-search-con'>
