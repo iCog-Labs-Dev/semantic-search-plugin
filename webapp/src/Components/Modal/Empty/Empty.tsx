@@ -29,7 +29,7 @@ export default function Empty() {
                 fill='#f2f2f2' data-darkreader-inline-fill='' style={{'--darkreader-inline-fill': '#1e201f'}}/><path d='M0,514.26882c0,.66003,.53003,1.19,1.19006,1.19H551.48004c.65997,0,1.19-.52997,1.19-1.19,0-.65997-.53003-1.19-1.19-1.19H1.19006c-.66003,0-1.19006,.53003-1.19006,1.19Z' 
                 fill='#ccc' data-darkreader-inline-fill='' style={{'--darkreader-inline-fill': '#393b39'}}/></g></svg>
                 {/* <img src={undraw1} className='ss-undraw1' /> */}
-                <h3 className='ss-undraw1-des'>Search for messages and conversations using semantic search</h3>
+                <h3 className='ss-undraw1-des'>Search for conversations and ideas using semantic search</h3>
     </React.Fragment>
   )
 }
