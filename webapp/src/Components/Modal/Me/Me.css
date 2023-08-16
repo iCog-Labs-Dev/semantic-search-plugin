@@ -1,15 +1,28 @@
 .Me-con {
-    display:flex;
-    flex-direction: row;
-    justify-content: right;
+  display: flex;
+  justify-content: right;
+  align-self: flex-end;
 }
 .Me-con .Me-text {
-    padding:2rem;
-    margin:1rem;
-    background:rgba(17, 36, 112, 0.176);
-    border-radius: 10px;
-    border-bottom-right-radius: 0;
-    font-size:1.5rem;
-    font-weight: 600;
-    margin-bottom:2rem;
+  --message-bubble-color: rgba(17, 36, 112, 0.176);
+  --message-border-radius: 7px;
+  position: relative;
+  padding: 1.5rem 2.3rem;
+  background: var(--message-bubble-color);
+  border-radius: var(--message-border-radius);
+  border-top-right-radius: 0;
+  font-size: 1.8rem;
+}
+
+.Me-con .Me-text::before {
+  content: "";
+  width: 0px;
+  height: 0px;
+  position: absolute;
+  border-left: var(--message-border-radius) solid var(--message-bubble-color);
+  border-right: var(--message-border-radius) solid transparent;
+  border-top: var(--message-border-radius) solid var(--message-bubble-color);
+  border-bottom: var(--message-border-radius) solid transparent;
+  top: 0;
+  right: calc(var(--message-border-radius) * -2);
 }
