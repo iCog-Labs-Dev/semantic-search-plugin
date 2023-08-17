@@ -9,7 +9,7 @@ import Loader from './Loader/Loader';
 function Modal() {
     const [conversation, setConversation] = useState<any>([]);
     const [input, setInput] = useState('');
-    const [apiURL, setApiURL] = useState('https://804c-34-170-252-61.ngrok-free.app');
+    const [apiURL, setApiURL] = useState('https://aa7c-34-32-216-56.ngrok-free.app');
     const [loading, setLoading] = useState(false);
 
     // useEffect(() => {
@@ -20,7 +20,7 @@ function Modal() {
 
     const handleSubmit = () => {
         const query = input;
-        const newData = [...conversation, {me: true, text: input}];
+        const newData = [{me: true, text: input}];
         setConversation(newData);
         setInput('');
         setLoading(true);
@@ -79,6 +79,7 @@ function Modal() {
                     ><path d='M2,21L23,12L2,3V10L17,12L2,14V21Z'/></svg>
                 </button>
             </div>
+            <div className='ss-bottom-shadow-con'/>
         </div>
     );
 }
