@@ -12,10 +12,9 @@ import { PluginRegistry } from '@/types/mattermost-webapp';
 import App from './Components/App';
 const Icon = () => <i className='icon fa fa-search' />;
 // eslint-disable-next-line
-const al = (window: any) => window.openSSModal = true;
 const r = (state: any, action: any) => {
     if (!state) {
-        state = { openModal: true }
+        state = { openModal: false }
     }
     if (action?.type?.hasOwnProperty("openModal")) {
         state.openModal = action.type.openModal

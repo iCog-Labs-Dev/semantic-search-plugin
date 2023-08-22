@@ -119,13 +119,9 @@
 
 .bot-context-relevance {
     display: flex;
-    align-items: center;
-    gap: 0.7rem;
-    padding-inline: 1rem;
-    padding-block: 0.4rem;
-    border-radius: 5px;
-    background-color: teal;
-    fill: white;
-    stroke: white;
-    color: white;
+    flex-direction: row;
+    justify-content: space-between;
+}
+.Bot-text-error{
+    color:red;
 }
