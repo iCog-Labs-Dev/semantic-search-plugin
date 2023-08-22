@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 
 import './Modal.css';
 import Empty from './Empty/Empty';
@@ -17,10 +17,13 @@ function Modal() {
     //     const api = prompt('Search engine URL:');
     //     setApiURL(api!);
     // }, []);
-
+    const error = (newData: any) => {
+        setConversation([...newData, { me: false, error: true, text: "Failed to load response" }])
+        setLoading(false)
+    }
     const handleSubmit = () => {
         const query = input;
-        const newData = [{me: true, text: input}];
+        const newData = [{ me: true, text: input }];
         setConversation(newData);
         setInput('');
         setLoading(true);
@@ -35,26 +38,30 @@ function Modal() {
         }).then((e) => e.json()).then((res) => {
             setLoading(false);
             if (res) {
-                setConversation([...newData, {me: false, text: res.response, context: res.metadata}]);
+                setConversation([...newData, { me: false, text: res.response, context: res.metadata }]);
             } else {
                 // eslint-disable-next-line no-alert
                 alert('Failed to load response');
+                error(newData)
             }
-        // eslint-disable-next-line no-console
-        }).catch((e) => console.log(e));
+            // eslint-disable-next-line no-console
+        }).catch((e) => {
+            console.log(e)
+            error(newData)
+        });
     };
 
     return (
         <div className={'ss-modal-con'}>
 
             <div className='ss-content-con'>
-                {conversation.length ? conversation.map((c:any) => {
+                {conversation.length ? conversation.map((c: any) => {
                     if (c.me) {
-                        return <Me msg={c}/>;
+                        return <Me msg={c} />;
                     }
-                    return <Bot msg={c}/>;
-                }) : <div className='ss-content-empty'> <Empty/> </div>}
-                <Loader loading={loading}/>
+                    return <Bot msg={c} />;
+                }) : <div className='ss-content-empty'> <Empty /> </div>}
+                <Loader loading={loading} />
             </div>
             <div className='ss-search-con'>
                 <input
@@ -76,10 +83,10 @@ function Modal() {
                         viewBox='0 0 20 20'
                         aria-label='Create a post'
                         data-darkreader-inline-fill=''
-                    ><path d='M2,21L23,12L2,3V10L17,12L2,14V21Z'/></svg>
+                    ><path d='M2,21L23,12L2,3V10L17,12L2,14V21Z' /></svg>
                 </button>
             </div>
-            <div className='ss-bottom-shadow-con'/>
+            <div className='ss-bottom-shadow-con' />
         </div>
     );
 }
