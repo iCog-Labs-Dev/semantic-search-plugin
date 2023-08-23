@@ -9,7 +9,7 @@ import Loader from './Loader/Loader';
 function Modal() {
     const [conversation, setConversation] = useState<any>([]);
     const [input, setInput] = useState('');
-    const [apiURL, setApiURL] = useState('https://aa7c-34-32-216-56.ngrok-free.app');
+    const [apiURL, setApiURL] = useState(process.env.MM_NGROK_DOMAIN);
     const [loading, setLoading] = useState(false);
 
     // useEffect(() => {
