@@ -6,6 +6,7 @@ function Me({msg}: any) {
             <div className='Me-text'>
                 {msg.text}
             </div>
+            <span className={`Me-error ${msg.error ? '' : 'Me-error-hide'}`}> { msg.errorText } </span>
         </div>
     );
 }

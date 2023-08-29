@@ -1,20 +1,26 @@
 .Me-con {
-  display: flex;
-  justify-content: right;
   align-self: flex-end;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.6rem;
+  margin-bottom: 1.5rem;
 }
-.Me-con .Me-text {
+
+.Me-text {
   --message-bubble-color: rgba(17, 36, 112, 0.176);
   --message-border-radius: 8px;
   position: relative;
+  align-self: flex-start;
   padding: 1.5rem 2.3rem;
   background: var(--message-bubble-color);
   border-radius: var(--message-border-radius);
   border-bottom-right-radius: 0;
   font-size: 1.8rem;
+  margin-right: calc(var(--message-border-radius) * 2);
 }
 
-.Me-con .Me-text::before {
+.Me-text::before {
   content: "";
   width: 0px;
   height: 0px;
@@ -25,4 +31,14 @@
   border-bottom: var(--message-border-radius) solid var(--message-bubble-color);
   bottom: 0;
   right: calc(var(--message-border-radius) * -2);
+}
+
+.Me-error {
+  font-weight: 300;
+  font-size: 1.3rem;
+  color:red;
+}
+
+.Me-error-hide {
+  display:none;
 }
