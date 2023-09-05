@@ -1,13 +1,13 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react';
 
-import './Error.css'
+import './Error.css';
 
-function Error(store : any) {
+function Error({error} : any) {
     return (
-        <div>
-            <h1>This is the Error page</h1>
+        <div className='ss-error-container'>
+            <p> { error.text } </p>
         </div>
-    )
+    );
 }
 
-export default Error
+export default Error;
