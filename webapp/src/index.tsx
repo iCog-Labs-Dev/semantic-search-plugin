@@ -1,29 +1,24 @@
-import React from 'react';
+import React from 'react'
 
-import { Store, Action } from 'redux';
+import { Action, Store } from 'redux'
 
-import { GlobalState } from '@mattermost/types/lib/store';
+import { GlobalState } from '@mattermost/types/lib/store'
 
-import { manifest } from '@/manifest';
+import { manifest } from '@/manifest'
 
-import { PluginRegistry } from '@/types/mattermost-webapp';
-import App from './Components/App';
-const Icon = () => <i className='icon fa fa-search' />;
-
+import App from './Components/App'
+const Icon = () => <i className='icon fa fa-search'/>;
 
 export default class Plugin {
-    public async initialize(registry: any, store: Store<GlobalState, Action<Record<string, unknown>>>) {        
+    public async initialize(registry: any, store: Store<GlobalState, Action<Record<string, unknown>>>) {
         const {
-            rhsID, 
-            showRHSPlugin, 
-            hideRGSPlugin, 
-            toggleRHSPlugin
-        } = registry.registerRightHandSidebarComponent(() => <App store={store} />);
+            toggleRHSPlugin,
+        } = registry.registerRightHandSidebarComponent(() => <App store={store}/>, 'Semantic Search');
 
         registry.registerChannelHeaderButtonAction(
-            <Icon />, 
-            (): void => store.dispatch(toggleRHSPlugin), 
-            'Semantic search'
+            <Icon/>,
+            (): void => store.dispatch(toggleRHSPlugin),
+            'Semantic search',
         );
     }
 }
