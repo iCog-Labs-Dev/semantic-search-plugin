@@ -16,9 +16,8 @@ type PayloadType = {
 }
 
 function App({store}: { store: Store<GlobalState, Action<Record<string, unknown>>> }) {
-    const [apiURL, setApiURL] = useState(
-        'https://39b2-35-185-24-230.ngrok-free.app',
-    );
+    // eslint-disable-next-line no-process-env
+    const apiURL = process.env.MM_PLUGIN_API_URL;
     const [loading, setLoading] = useState(false);
     const [searchInput, setSearchInput] = useState('');
     const [searchQuery, setSearchQuery] = useState('');
