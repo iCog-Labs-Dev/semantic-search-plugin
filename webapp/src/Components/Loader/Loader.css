@@ -1,12 +1,11 @@
 .loader {
-  --independent-variable: 6px;
+  --independent-variable: 5px;
   display: inline-block;
   position: relative;
   width: calc(var(--independent-variable) * 10);
   height: calc(var(--independent-variable) * 10);
   align-self: center;
-  margin-top: 3rem;
-  margin-bottom: 9rem;
+  margin-block: auto;
 }
 .loader div {
   display: inline-block;

@@ -1,9 +1,6 @@
 import React from 'react';
 import './Loader.css';
-function Loader({loading}) {
-    if (!loading) {
-        return null;
-    }
+function Loader() {
     return (
         <div className='loader'>
             <div/>

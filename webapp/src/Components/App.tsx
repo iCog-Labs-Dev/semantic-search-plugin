@@ -1,37 +1,104 @@
-import React, { useEffect, useState } from 'react';
-import { Store, Action } from 'redux';
-import { GlobalState } from '@mattermost/types/lib/store';
+/* eslint-disable react/jsx-closing-bracket-location */
+import { GlobalState } from '@mattermost/types/lib/store'
+import React, { FormEvent, Fragment, useState } from 'react'
+import { Action, Store } from 'redux'
 
-import './App.css';
-import Modal from './Modal/Modal'
-declare global {
-  interface Window { openSSModal: any; }
+import './App.css'
+import Error from './Error/Error'
+import Home from './Home/Home'
+import Loader from './Loader/Loader'
+import Result from './Result/Result'
+
+type PayloadType = {
+    isError?: boolean;
+    text: string;
+    context?: string;
 }
-function App({ store }: { store: Store<GlobalState, Action<Record<string, unknown>>> }) {
-  const [openModal, setOpenModal] = useState(false)
-  
-  useEffect(() => {
-    return store.subscribe(() => {
-      const storeState: any = store.getState()
-      const state = storeState['plugins-com.sing.semantic-search']
-      setOpenModal(state.openModal)
-    })
-  }, [])
-  const changeOpenModal = (val: boolean) => {
-    const openModalAction = { type: { openModal: val } }
-    store.dispatch(openModalAction)
-  }
-  const handleModalBg = () => {
-    changeOpenModal(false)
-  }
-  return (
-    <div className={`ss-container ${openModal ? '' : 'ss-hidden'}`}>
-      <div className='ss-container-bg' onClick={handleModalBg} />
-      <div className='ss-container-modal'>
-          <Modal/>
-      </div>
-    </div>
-  )
+
+function App({store}: { store: Store<GlobalState, Action<Record<string, unknown>>> }) {
+    // eslint-disable-next-line no-process-env
+    const apiURL = process.env.MM_PLUGIN_API_URL;
+    const [loading, setLoading] = useState(false);
+    const [searchInput, setSearchInput] = useState('');
+    const [searchQuery, setSearchQuery] = useState('');
+    const [payload, setPayload] = useState<PayloadType>();
+
+    const handleSearchQuery = async (e: FormEvent) => {
+        e.preventDefault();
+
+        if (searchInput === searchQuery && searchQuery !== '') {
+            return;
+        }
+
+        setSearchQuery(searchInput);
+
+        setLoading(true);
+        const fetchOptions = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                query: searchQuery,
+            }),
+        };
+
+        try {
+            const res = await fetch(apiURL!, fetchOptions);
+
+            const jsonRes = await res.json();
+
+            if (!jsonRes) {
+                throw Error('');
+            }
+
+            const responsePayload = {text: jsonRes.response, context: jsonRes.metadata};
+            setPayload(responsePayload);
+
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        } catch (err: any) {
+            // eslint-disable-next-line no-console
+            console.warn('Error', err);
+
+            const errorPayload = {isError: true, text: 'Something went wrong. Please try again.'};
+            setPayload(errorPayload);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    return (
+        <div className='ss-root'>
+            <form
+                className='ss-search-wrapper'
+                onSubmit={handleSearchQuery}
+            >
+                <div className='ss-search-icon'>
+                    <i className='icon icon-magnify icon-18'/>
+                </div>
+                <input
+                    className='ss-search-input'
+                    placeholder='Search messages'
+                    value={searchInput}
+                    onChange={(e) => setSearchInput(e.target.value)}
+                />
+            </form>
+            <div className='ss-result-wrapper'>
+                { loading ? <Loader/> : <Fragment>
+                    { payload ? <Fragment>
+                        {
+                            payload.isError ? <Error
+                                error={payload}
+                            /> : <Result
+                                item={payload}
+                            />
+                        }
+                    </Fragment> : <Home/> }
+                </Fragment>
+                }
+            </div>
+        </div>
+    );
 }
 
 export default App;
