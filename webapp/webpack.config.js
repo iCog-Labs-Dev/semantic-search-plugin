@@ -34,7 +34,7 @@ if (NPM_TARGET === 'build:watch' || NPM_TARGET === 'debug:watch') {
 }
 
 // return an Object with a parsed key
-const env = dotenv.config().parsed;
+const env = dotenv.config({path: '../.env'}).parsed;
 
 // reduce it to a nice object
 const envKeys = Object.keys(env).reduce((prev, next) => {
