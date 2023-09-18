@@ -6,7 +6,7 @@ import { GlobalState } from '@mattermost/types/lib/store'
 
 import { manifest } from '@/manifest'
 
-import App from './Components/App'
+import RHSView from './Components/right_hand_sidebar/RightHandSidebar'
 const Icon = () => <i className='icon fa fa-search'/>;
 
 export default class Plugin {
@@ -17,7 +17,7 @@ export default class Plugin {
         const {
             id,
             toggleRHSPlugin,
-        } = registry.registerRightHandSidebarComponent(() => <App store={store}/>, 'Semantic Search');
+        } = registry.registerRightHandSidebarComponent(() => <RHSView store={store}/>, 'Semantic Search');
 
         registry.registerChannelHeaderButtonAction(
             <Icon/>,

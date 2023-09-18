@@ -1,6 +1,6 @@
-import React, {Fragment} from 'react';
+import React from 'react'
 
-import './Result.css';
+import './resultStyle.css'
 
 function Result({item} : any) {
     return (
