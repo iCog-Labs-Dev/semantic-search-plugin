@@ -12,8 +12,41 @@
         "bundle_path": "webapp/dist/main.js"
     },
     "settings_schema": {
-        "header": "",
-        "footer": "",
-        "settings": []
+        "header": "Configure your Mattermost Semantic Search Plugin",
+        "footer": "To report an issue, make a suggestion or a contribution, [check the repository](https://github.com/iCog-Labs-Dev/semantic-search-plugin).",
+        "settings": [
+            {
+                "key": "syncInterval",
+                "display_name": "Sync Interval:",
+                "type": "custom",
+                "help_text": "Number of minutes to wait before fetching new messages. Minimum is 1 minute, maximum is 1440 minutes (24 hours), and default is 15 minutes.",
+                "placeholder": "",
+                "default": 15
+            },
+            {
+                "key": "toggleSync",
+                "display_name": "Toggle Sync:",
+                "type": "custom",
+                "help_text": "Toggle the semantic search sync. If enabled, the plugin will fetch new messages every fetch interval. If disabled, the plugin will not fetch new messages. Default is true.",
+                "placeholder": "",
+                "default": null
+            },
+            {
+                "key": "timeRemainingUntilNextSync",
+                "display_name": "Time Remaining Until Next Sync:",
+                "type": "custom",
+                "help_text": "Time remaining until the next fetch. This is a read-only field. If the plugin is syncing, this field will show the time remaining until the next fetch. If the plugin is not syncing, this field will show \"Not Syncing\".",
+                "placeholder": "",
+                "default": "Not Syncing"
+            },
+            {
+                "key": "restartSync",
+                "display_name": "Restart Sync:",
+                "type": "custom",
+                "help_text": "Restart the semantic search sync. If the plugin is not syncing, this button will start the sync. If the plugin is syncing, this button will restart the sync.",
+                "placeholder": "",
+                "default": null
+            }
+        ]
     }
 }

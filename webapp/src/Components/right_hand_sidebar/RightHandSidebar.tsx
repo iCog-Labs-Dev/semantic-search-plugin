@@ -31,6 +31,9 @@ function RHS({
     const handleSearchQuery = async (e: FormEvent) => {
         e.preventDefault();
 
+        // eslint-disable-next-line no-console
+        console.log(store.getState().entities.users.currentUserId);
+
         if (searchInput === searchQuery && searchQuery !== '') {
             return;
         }
