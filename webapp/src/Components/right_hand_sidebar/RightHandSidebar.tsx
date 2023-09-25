@@ -31,14 +31,15 @@ function RHS({
     const handleSearchQuery = async (e: FormEvent) => {
         e.preventDefault();
 
-        // eslint-disable-next-line no-console
-        console.log(store.getState().entities.users.currentUserId);
-
         if (searchInput === searchQuery && searchQuery !== '') {
             return;
         }
-
+        
         setSearchQuery(searchInput);
+        
+        // eslint-disable-next-line no-console
+        const currentUser = store.getState().entities.users.currentUserId
+        console.log('' , currentUser);
 
         setLoading(true);
         const fetchOptions = {
@@ -48,11 +49,12 @@ function RHS({
             },
             body: JSON.stringify({
                 query: searchQuery,
+                user_id: currentUser
             }),
         };
 
         try {
-            const res = await fetch(apiURL!, fetchOptions);
+            const res = await fetch(apiURL! + '/search', fetchOptions);
 
             const jsonRes = await res.json();
 
@@ -60,11 +62,8 @@ function RHS({
                 throw Error('');
             }
 
-            const responsePayload = {
-                text: jsonRes.response,
-                context: jsonRes.metadata,
-            };
-            setPayload(responsePayload);
+            const responsePayload = {text: jsonRes.llm, context: jsonRes.context};
+            setPayload(responsePayload)
 
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } catch (err: any) {
