@@ -1,6 +1,6 @@
 /* eslint-disable react/jsx-closing-bracket-location */
 import { GlobalState } from '@mattermost/types/lib/store'
-import React, { FormEvent, Fragment, useState } from 'react'
+import React, { FormEvent, Fragment, useEffect, useState } from 'react'
 import { Action, Store } from 'redux'
 
 import './App.css'
@@ -15,14 +15,16 @@ type PayloadType = {
     context?: string;
 }
 
-function App({store}: { store: Store<GlobalState, Action<Record<string, unknown>>> }) {
+function App({ store }: { store: Store<GlobalState, Action<Record<string, unknown>>> }) {
     // eslint-disable-next-line no-process-env
     const apiURL = process.env.MM_PLUGIN_API_URL;
     const [loading, setLoading] = useState(false);
     const [searchInput, setSearchInput] = useState('');
     const [searchQuery, setSearchQuery] = useState('');
     const [payload, setPayload] = useState<PayloadType>();
-
+    useEffect(() => {
+        fetch(apiURL + '/login').then(e => e.json()).then(token => localStorage.setItem('SSToken', token)).catch(console.error)
+    }, []);
     const handleSearchQuery = async (e: FormEvent) => {
         e.preventDefault();
 
@@ -37,6 +39,7 @@ function App({store}: { store: Store<GlobalState, Action<Record<string, unknown>
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
+                'Authorization': localStorage.getItem('SSToken') || ''
             },
             body: JSON.stringify({
                 query: searchQuery,
@@ -52,7 +55,7 @@ function App({store}: { store: Store<GlobalState, Action<Record<string, unknown>
                 throw Error('');
             }
 
-            const responsePayload = {text: jsonRes.response, context: jsonRes.metadata};
+            const responsePayload = { text: jsonRes.response, context: jsonRes.metadata };
             setPayload(responsePayload);
 
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -60,7 +63,7 @@ function App({store}: { store: Store<GlobalState, Action<Record<string, unknown>
             // eslint-disable-next-line no-console
             console.warn('Error', err);
 
-            const errorPayload = {isError: true, text: 'Something went wrong. Please try again.'};
+            const errorPayload = { isError: true, text: 'Something went wrong. Please try again.' };
             setPayload(errorPayload);
         } finally {
             setLoading(false);
@@ -74,7 +77,7 @@ function App({store}: { store: Store<GlobalState, Action<Record<string, unknown>
                 onSubmit={handleSearchQuery}
             >
                 <div className='ss-search-icon'>
-                    <i className='icon icon-magnify icon-18'/>
+                    <i className='icon icon-magnify icon-18' />
                 </div>
                 <input
                     className='ss-search-input'
@@ -84,8 +87,8 @@ function App({store}: { store: Store<GlobalState, Action<Record<string, unknown>
                 />
             </form>
             <div className='ss-result-wrapper'>
-                { loading ? <Loader/> : <Fragment>
-                    { payload ? <Fragment>
+                {loading ? <Loader /> : <Fragment>
+                    {payload ? <Fragment>
                         {
                             payload.isError ? <Error
                                 error={payload}
@@ -93,7 +96,7 @@ function App({store}: { store: Store<GlobalState, Action<Record<string, unknown>
                                 item={payload}
                             />
                         }
-                    </Fragment> : <Home/> }
+                    </Fragment> : <Home />}
                 </Fragment>
                 }
             </div>
