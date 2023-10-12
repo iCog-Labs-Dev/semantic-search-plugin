@@ -14,6 +14,9 @@ type PayloadType = {
     text: string;
     context?: string;
 }
+const genRand = (len: number): string => {
+    return Math.random().toString(36).substring(2, len + 2);
+}
 
 function App({ store }: { store: Store<GlobalState, Action<Record<string, unknown>>> }) {
     // eslint-disable-next-line no-process-env
@@ -22,9 +25,12 @@ function App({ store }: { store: Store<GlobalState, Action<Record<string, unknow
     const [searchInput, setSearchInput] = useState('');
     const [searchQuery, setSearchQuery] = useState('');
     const [payload, setPayload] = useState<PayloadType>();
-    useEffect(() => {
-        fetch(apiURL + '/login').then(e => e.json()).then(token => localStorage.setItem('SSToken', token)).catch(console.error)
-    }, []);
+    const handleLogin = (e: any) => {
+        e.preventDefault();
+        const token = genRand(10);
+        localStorage.setItem('SSToken', token);
+        window.location.assign(apiURL + '/login/' + token);
+    }
     const handleSearchQuery = async (e: FormEvent) => {
         e.preventDefault();
 
@@ -69,7 +75,9 @@ function App({ store }: { store: Store<GlobalState, Action<Record<string, unknow
             setLoading(false);
         }
     };
-
+    if (!localStorage.getItem('SSToken')) {
+        return <a href="#" onClick={handleLogin}>Authorize semantic search engine</a>
+    }
     return (
         <div className='ss-root'>
             <form
