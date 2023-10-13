@@ -30,8 +30,17 @@ function Result({item} : any) {
                                             <span> {`#${channel_name}`} </span>
                                         </div>
                                     </div>
-                                    <div className='ss-rc-external-link'>
-                                        <i className='icon icon-open-in-new icon-18'/>
+                                    <div
+                                        className='ss-rc-external-link'
+                                        style={{display: source === 'sl' ? 'none' : ''}}
+                                    >
+                                        <a
+                                            href={source === 'mm' ? message_link : ''}
+                                            target='_blank'
+                                            rel='noreferrer'
+                                        >
+                                            <i className='icon icon-open-in-new icon-18'/>
+                                        </a>
                                     </div>
                                 </div>
                                 <div className='ss-rc-middle'>{message}</div>
