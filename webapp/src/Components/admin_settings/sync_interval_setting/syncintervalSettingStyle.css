@@ -1,3 +1,16 @@
+.ss-setting-sync-interval {
+  display: flex;
+  gap: 1rem;
+}
+
+.ss-setting-sync-interval__item {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+}
+
 .ss-setting-sync-interval-input {
   background-color: rgba(var(--center-channel-color-rgb), 0.04);
   width: fit-content;
@@ -5,7 +18,6 @@
   border: 1px solid rgba(var(--center-channel-color-rgb), 0.08);
   border-radius: 4px;
   padding: 0.8rem 1rem;
-  margin-right: 1rem;
 }
 
 .ss-setting-sync-interval-input:focus {
@@ -25,10 +37,27 @@
   padding: 1rem 2.5rem;
   font-size: 14px;
   cursor: pointer;
+  height: fit-content;
+  margin-left: 1rem;
+}
+
+.ss-setting-sync-interval-label {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.ss-setting-sync-interval-divider {
+  font-size: 20px;
+  font-weight: 1000;
+  margin-top: 0.5rem;
+}
+
+.ss-setting-sync-interval button:disabled {
+  background-color: var(--button-bg-64);
 }
 
 .ss-setting-sync-interval button:disabled:hover {
-  background-color: var(--button-bg-08);
+  background-color: var(--button-bg-40);
 }
 
 .ss-setting-sync-interval button:active {
