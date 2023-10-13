@@ -6,9 +6,11 @@ import { GlobalState } from '@mattermost/types/lib/store'
 
 import { manifest } from '@/manifest'
 
-import RestartSyncSetting from './Components/admin_settings/restart_sync_setting/RestartSyncSetting'
+import ResetSyncSetting from './Components/admin_settings/reset_sync_setting/ResetSyncSetting'
 import SyncIntervalSetting from './Components/admin_settings/sync_interval_setting/SyncIntervalSetting'
+import TimeLeftUntilNextSyncSetting from './Components/admin_settings/time_left_until_next_sync_setting/TimeLeftUntilNextSyncSetting'
 import ToggleSyncSetting from './Components/admin_settings/toggle_sync_setting/ToggleSyncSetting'
+import UploadSlackExportFileSetting from './Components/admin_settings/upload_slack_export_file_setting/UploadSlackExportFileSetting'
 import RHSView from './Components/right_hand_sidebar/RightHandSidebar'
 
 export default class Plugin {
@@ -29,9 +31,13 @@ export default class Plugin {
 
         registry.registerAdminConsoleCustomSetting('syncInterval', SyncIntervalSetting, {showTitle: true});
 
-        registry.registerAdminConsoleCustomSetting('toggleSync', ToggleSyncSetting, {showTitle: true});
+        registry.registerAdminConsoleCustomSetting('toggleSync', () => (<ToggleSyncSetting store={store}/>), {showTitle: true});
 
-        registry.registerAdminConsoleCustomSetting('restartSync', RestartSyncSetting, {showTitle: true});
+        registry.registerAdminConsoleCustomSetting('resetSync', ResetSyncSetting, {showTitle: true});
+
+        registry.registerAdminConsoleCustomSetting('timeLeftUntilNextSync', TimeLeftUntilNextSyncSetting, {showTitle: true});
+
+        registry.registerAdminConsoleCustomSetting('uploadSlackExportFile', UploadSlackExportFileSetting, {showTitle: true});
 
         this.globalRegistry = registry;
         this.registeredComponents.push(id);

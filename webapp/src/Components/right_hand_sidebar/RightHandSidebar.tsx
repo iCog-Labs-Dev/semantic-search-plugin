@@ -32,7 +32,7 @@ function RHS({
         e.preventDefault();
 
         // eslint-disable-next-line no-console
-        console.log(store.getState().entities.users.currentUserId);
+        // console.log(store.getState().entities.users.currentUserId);
 
         if (searchInput === searchQuery && searchQuery !== '') {
             return;

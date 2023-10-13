@@ -1,0 +1,21 @@
+.ss-restart-container {
+    display: flex;
+    align-items: center;
+}
+
+.ss-restart-container input[type="checkbox"] {
+    margin-right: 1rem;
+    text-align: center;
+    width: 1.8rem;
+    height: 1.8rem;
+}
+
+.ss-restart-container label {
+    margin-right: 2rem;
+    margin-bottom: 0;
+    font-weight: 500;
+}
+
+.ss-restart-container button {
+    margin-left: 1rem;
+}
