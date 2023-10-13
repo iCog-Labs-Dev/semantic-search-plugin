@@ -40,8 +40,9 @@ function RHS({
 
         setSearchQuery(searchInput);
 
-        // eslint-disable-next-line no-console
         const currentUser = store.getState().entities.users.currentUserId;
+
+        // eslint-disable-next-line no-console
         console.log('', currentUser);
 
         setLoading(true);
