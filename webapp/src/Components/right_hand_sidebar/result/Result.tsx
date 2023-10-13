@@ -13,10 +13,11 @@ function Result({item} : any) {
 
                 <h3 className='ss-response-context-subtitle'> {'Context:'} </h3>
                 <div className='ss-response-context-container'>
-                    {item.context.map(({time, user_name, channel_name, message, score, access, channel_link, message_link, platform, user_profile_link}: any) => {
+                    {item.context.map(({time, user_name, channel_name, message, score, access, channel_link, message_link, source, user_dm_link}: any) => {
                         return (
                             <div
                                 className='ss-response-context'
+                                style={{backgroundColor: source === 'sl' ? '#36C5F055' : '', color: source === 'sl' ? '1d1d1d' : ''}}
                                 key={time}
                             >
                                 <div className='ss-rc-top'>
