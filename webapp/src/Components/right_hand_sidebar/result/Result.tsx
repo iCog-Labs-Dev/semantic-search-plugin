@@ -1,11 +1,49 @@
-import React from 'react'
+import React, { useEffect, useRef } from 'react'
 import ReactMarkdown from 'react-markdown'
 
 import './resultStyle.css'
 
 function Result({item} : any) {
+    const wrapperRef = useRef<HTMLDivElement>(null);
+    const myButtonRef = useRef<HTMLButtonElement>(null);
+
+    useEffect(() => {
+        const handleScroll = () => scrollFunction(300);
+
+        if (wrapperRef.current) {
+            // When the user scrolls down 50px from the top of the document, show the button
+            wrapperRef.current.addEventListener('scroll', handleScroll);
+        }
+
+        return () => {
+            if (wrapperRef.current) {
+                wrapperRef.current.removeEventListener('scroll', handleScroll);
+            }
+        };
+    }, []);
+
+    function scrollFunction(scrollTopValue: number) {
+        if (myButtonRef.current && wrapperRef.current) {
+            if (wrapperRef.current.scrollTop > scrollTopValue) {
+                myButtonRef.current.style.display = 'flex';
+            } else {
+                myButtonRef.current.style.display = 'none';
+            }
+        }
+    }
+
+    // When the user clicks on the button, scroll to the top of the document
+    function scrollToTop() {
+        if (wrapperRef.current) {
+            wrapperRef.current.scrollTo({top: 0, behavior: 'smooth'});
+        }
+    }
+
     return (
-        <div className='ss-response-wrapper'>
+        <div
+            ref={wrapperRef}
+            className='ss-response-wrapper'
+        >
             <div className='ss-response-container'>
                 {/* <i className='icon icon-check-circle-outline'/> */}
                 <ReactMarkdown className='ss-response-container_text'>{ item.text }</ReactMarkdown>
@@ -74,6 +112,13 @@ function Result({item} : any) {
                     })}
                 </div>
             </div> : ''}
+            <button
+                ref={myButtonRef}
+                className='ss-response-back-to-top'
+                onClick={scrollToTop}
+            >
+                <i className='icon icon-chevron-up'/>
+            </button>
         </div>
     );
 }

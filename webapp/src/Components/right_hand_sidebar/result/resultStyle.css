@@ -158,3 +158,28 @@
 .ss-rc-date {
     color:rgba(var(--center-channel-color-rgb), 0.72);
 }
+
+.ss-response-back-to-top {
+    display: none;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    bottom: 3rem;
+    right: 2rem;
+    z-index: 100;
+    background-color: var(--button-bg);
+    color: var(--button-color);
+    cursor: pointer;
+    border: none;
+    outline: none;
+    border-radius: 100%;
+    padding: 2rem;
+    transition: display 1s ease-in-out;
+}
+
+.ss-response-back-to-top .icon {
+    font-size: 3rem;
+    width: 1rem;
+    height: 1rem;
+    padding-bottom: 5px;
+}
