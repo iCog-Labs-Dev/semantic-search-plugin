@@ -1,4 +1,5 @@
 import React from 'react'
+import ReactMarkdown from 'react-markdown'
 
 import './resultStyle.css'
 
@@ -7,7 +8,7 @@ function Result({item} : any) {
         <div className='ss-response-wrapper'>
             <div className='ss-response-container'>
                 {/* <i className='icon icon-check-circle-outline'/> */}
-                <p> { item.text } </p>
+                <ReactMarkdown className='ss-response-container_text'>{ item.text }</ReactMarkdown>
             </div>
             {item.context ? <div className='ss-response-context-wrapper'>
 
@@ -17,7 +18,7 @@ function Result({item} : any) {
                         return (
                             <div
                                 className='ss-response-context'
-                                style={{backgroundColor: source === 'sl' ? '#36C5F055' : '', color: source === 'sl' ? '1d1d1d' : ''}}
+                                style={{borderColor: source === 'sl' ? '#4A154Baa' : '', borderWidth: source === 'sl' ? '2px' : ''}}
                                 key={time}
                             >
                                 <div className='ss-rc-top'>
@@ -32,15 +33,21 @@ function Result({item} : any) {
                                     </div>
                                     <div
                                         className='ss-rc-external-link'
-                                        style={{display: source === 'sl' ? 'none' : ''}}
                                     >
                                         <a
+                                            style={{display: source === 'sl' ? 'none' : ''}}
                                             href={source === 'mm' ? message_link : ''}
                                             target='_blank'
                                             rel='noreferrer'
                                         >
                                             <i className='icon icon-open-in-new icon-18'/>
                                         </a>
+                                        <div
+                                            className='ss-rc-external-link__sl'
+                                            style={{display: source === 'mm' ? 'none' : ''}}
+                                        >
+                                            {'Slack'}
+                                        </div>
                                     </div>
                                 </div>
                                 <div className='ss-rc-middle'>{message}</div>
