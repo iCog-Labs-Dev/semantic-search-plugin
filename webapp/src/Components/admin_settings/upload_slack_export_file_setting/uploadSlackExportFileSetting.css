@@ -77,6 +77,11 @@
   outline: none;
 }
 
+.upload-slack-export-channel-table-container {
+  height: 45rem;
+  overflow: auto;
+}
+
 .upload-slack-export-channel-table {
   font-family: Arial, Helvetica, sans-serif;
   border-collapse: collapse;
@@ -84,24 +89,30 @@
 }
 
 .upload-slack-export-channel-table td, .upload-slack-export-channel-table th {
-  border: 1px solid rgba(var(--center-channel-color-rgb), 0.16);
+  border: 1px solid rgba(var(--center-channel-color-rgb), 0.24);
   padding: 8px;
 }
 
 .upload-slack-export-channel-table th {
+  position: sticky;
+  top: 0;
   padding-top: 12px;
   padding-bottom: 12px;
   text-align: center;
-  background-color: rgba(var(--center-channel-color-rgb), 0.20);
+  background-color: lightgray;
   color: var(--center-channel-color);
 }
 
+.upload-slack-export-channel-table_body td {
+  padding-block: 4px;
+}
+
 .upload-slack-export-channel-table_body tr:nth-child(even){
-  background-color: rgba(var(--center-channel-color-rgb), 0.04);
+  background-color: rgba(var(--center-channel-color-rgb), 0.08);
 }
 
 .upload-slack-export-channel-table_body tr:hover {
-  background-color: rgba(var(--center-channel-color-rgb), 0.08);
+  background-color: rgba(var(--center-channel-color-rgb), 0.16);
 }
 
 .upload-slack-export-channel-table input[type="checkbox"] {
@@ -124,7 +135,7 @@
   font-size: 16px;
   border: 1px solid rgba(var(--center-channel-color-rgb), 0.08);
   border-radius: 4px;
-  padding: 0.8rem 1rem;
+  padding: 0.3rem 1rem;
 }
 
 .upload-slack-export-date-input:focus {
