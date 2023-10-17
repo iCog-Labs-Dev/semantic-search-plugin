@@ -17,7 +17,7 @@ function TimeLeftUntilNextSyncSetting() {
     // const [lastFetchTime, setLastFetchTime] = useState(new Date('2023-10-04T13:21:00.000Z').getTime());
 
     const [lastFetchTime, setLastFetchTime] = useState(0);
-    const [fetchInterval, setFetchInterval] = useState(15 * 60 * 1000); // 15 minutes default interval
+    const [fetchInterval, setFetchInterval] = useState(0);
     const [isSyncing, setIsSyncing] = useState<boolean>();
     const [countDown, setCountDown] = useState(0);
 
@@ -36,7 +36,7 @@ function TimeLeftUntilNextSyncSetting() {
         const jsonRes = await res.json();
 
         // eslint-disable-next-line no-console
-        // console.log('jsonRes', jsonRes);
+        // console.log('time left jsonRes', jsonRes);
 
         setLastFetchTime(jsonRes.last_fetch_time);
         setFetchInterval(jsonRes.fetch_interval * 1000);
@@ -73,11 +73,13 @@ function TimeLeftUntilNextSyncSetting() {
         // eslint-disable-next-line no-console
         // console.log(hours, minutes, seconds);
 
-        setTimeLeft({
-            hours,
-            minutes,
-            seconds,
-        });
+        if (countDown >= 0) {
+            setTimeLeft({
+                hours,
+                minutes,
+                seconds,
+            });
+        }
 
         const interval = setInterval(async () => {
             if (countDown < 1000) { // since we are counting down every second

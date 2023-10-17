@@ -18,20 +18,11 @@ function UploadSlackExportFileSetting() {
     // eslint-disable-next-line no-process-env
     const apiURL = process.env.MM_PLUGIN_API_URL;
     const [loading, setLoading] = useState(false);
-    const [slackExportFile, setSlackExportFile] = useState();
     const [allChecked, setAllChecked] = useState(false);
     const [unfilteredChannels, setUnfilteredChannels] = useState<Channel[]>([]);
     const [isUploaded, setIsUploaded] = useState(false);
 
     const noneChecked = unfilteredChannels.every((channel) => !channel.checked);
-
-    const restoreState = () => {
-        // eslint-disable-next-line no-undefined
-        setSlackExportFile(undefined);
-        setUnfilteredChannels([]);
-
-        // setAllChecked(false);
-    };
 
     const handleUpload = async (e) => {
         e.preventDefault();
@@ -76,7 +67,7 @@ function UploadSlackExportFileSetting() {
         const resJson = await res.json();
 
         // eslint-disable-next-line no-console
-        // console.log('resJson', resJson);
+        console.log('resJson', resJson);
 
         const unfilteredChnls = resJson.map((channel) => {
             if (!Object.prototype.hasOwnProperty.call(channel, 'checked')) {
@@ -96,6 +87,17 @@ function UploadSlackExportFileSetting() {
 
         setUnfilteredChannels(unfilteredChnls);
     };
+
+    useEffect(() => {
+        let timer: NodeJS.Timeout;
+        if (isUploaded) {
+            timer = setTimeout(() => {
+                setIsUploaded(false);
+            }, 3000);
+        }
+
+        return () => timer && clearTimeout(timer);
+    }, [isUploaded]);
 
     // handle all checked when unfilteredChannels changes
     useEffect(() => {
@@ -209,8 +211,6 @@ function UploadSlackExportFileSetting() {
     };
 
     const saveSlackData = async () => {
-        setIsUploaded(false);
-
         const checkedChannels = unfilteredChannels.filter((channel) => channel.checked);
 
         const unCheckedChannels = unfilteredChannels.filter((channel) => !channel.checked);
@@ -293,7 +293,7 @@ function UploadSlackExportFileSetting() {
             // eslint-disable-next-line no-console
             console.log('jsonRes', res.statusText);
 
-            restoreState();
+            setUnfilteredChannels([]);
             setIsUploaded(true);
         } catch (err: any) {
             // eslint-disable-next-line no-console
@@ -313,7 +313,6 @@ function UploadSlackExportFileSetting() {
                         id='file'
                         accept='.zip' // make sure to add other file types if any
                         className='upload-slack-export-file-setting__upload'
-                        value={slackExportFile}
                         onChange={handleUpload}
                     />
                     <label
