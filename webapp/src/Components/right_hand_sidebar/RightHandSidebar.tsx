@@ -1,6 +1,6 @@
 /* eslint-disable react/jsx-closing-bracket-location */
 import { GlobalState } from '@mattermost/types/lib/store'
-import React, { FormEvent, Fragment, useState } from 'react'
+import React, { Fragment, useEffect, useRef, useState } from 'react'
 import { Action, Store } from 'redux'
 
 import Error from './error/Error'
@@ -24,28 +24,39 @@ function RHS({
     // eslint-disable-next-line no-process-env
     const apiURL = process.env.MM_PLUGIN_API_URL;
     const [loading, setLoading] = useState(false);
-    const [searchInput, setSearchInput] = useState('');
+    const inputRef = useRef<HTMLInputElement>(null);
     const [searchQuery, setSearchQuery] = useState('');
     const [payload, setPayload] = useState<PayloadType>();
 
-    const handleSearchQuery = async (e: FormEvent) => {
+    const handleSearchQuery = async (e) => {
         e.preventDefault();
+        const inputValue = inputRef.current?.value;
 
-        // eslint-disable-next-line no-console
-        // console.log(store.getState().entities.users.currentUserId);
+        if (inputValue) {
+            setSearchQuery((prev) => {
+                if (prev === inputValue) {
+                    return '';
+                }
 
-        if (searchInput === searchQuery && searchQuery !== '') {
+                return inputValue;
+            });
+        }
+    };
+
+    useEffect(() => {
+        if (searchQuery === '') {
+            // setPayload(undefined);
             return;
         }
 
-        setSearchQuery(searchInput);
+        const currentUser = store.getState().entities.users.currentUserId;
 
         // eslint-disable-next-line no-console
-        const currentUser = store.getState().entities.users.currentUserId;
         console.log('', currentUser);
 
         setLoading(true);
-        const fetchOptions = {
+
+        fetch(`${apiURL}/search`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -54,34 +65,25 @@ function RHS({
                 query: searchQuery,
                 user_id: currentUser,
             }),
-        };
+        }).
+            then((res) => res.json()).
+            then((res) => {
+                const responsePayload = {text: res.llm, context: res.context};
+                setPayload(responsePayload);
+            }).
+            catch((err) => {
+                setPayload({isError: true, text: err.message});
 
-        try {
-            const res = await fetch(apiURL! + '/search', fetchOptions);
-
-            const jsonRes = await res.json();
-
-            if (!jsonRes) {
-                throw Error('');
-            }
-
-            const responsePayload = {text: jsonRes.llm, context: jsonRes.context};
-            setPayload(responsePayload);
-
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        } catch (err: any) {
-            // eslint-disable-next-line no-console
-            console.warn('Error', err);
-
-            const errorPayload = {
-                isError: true,
-                text: 'Something went wrong. Please try again.',
-            };
-            setPayload(errorPayload);
-        } finally {
-            setLoading(false);
-        }
-    };
+                // const errorPayload = {
+                //     isError: true,
+                //     text: 'Something went wrong. Please try again.',
+                // };
+                // setPayload(errorPayload);
+            }).
+            finally(() => {
+                setLoading(false);
+            });
+    }, [searchQuery]);
 
     return (
         <div className='ss-root'>
@@ -92,10 +94,9 @@ function RHS({
                     <i className='icon icon-magnify icon-18'/>
                 </div>
                 <input
+                    ref={inputRef}
                     className='ss-search-input'
                     placeholder='Search messages'
-                    value={searchInput}
-                    onChange={(e) => setSearchInput(e.target.value)}
                 />
             </form>
             <div className='ss-result-wrapper'>
