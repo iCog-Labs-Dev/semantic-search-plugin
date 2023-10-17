@@ -97,6 +97,7 @@ function UploadSlackExportFileSetting() {
         setUnfilteredChannels(unfilteredChnls);
     };
 
+    // handle all checked when unfilteredChannels changes
     useEffect(() => {
         if (unfilteredChannels.length === 0) {
             return;
@@ -107,29 +108,20 @@ function UploadSlackExportFileSetting() {
         setAllChecked(allChannelsChecked);
     }, [unfilteredChannels]);
 
-    useEffect(() => {
-        if (allChecked) {
-            setUnfilteredChannels((currentUnfilteredChannels) => {
-                // eslint-disable-next-line max-nested-callbacks
-                const newUnfilteredChannels = currentUnfilteredChannels.map((channel) => {
-                    channel.checked = true;
-                    return channel;
-                });
+    const handleAllChannelCheck = (e) => {
+        const checked = e.target.checked;
 
-                return newUnfilteredChannels;
+        setUnfilteredChannels((currentUnfilteredChannels) => {
+            const newUnfilteredChannels = currentUnfilteredChannels.map((channel) => {
+                channel.checked = checked;
+                return channel;
             });
-        } else {
-            setUnfilteredChannels((currentUnfilteredChannels) => {
-                // eslint-disable-next-line max-nested-callbacks
-                const newUnfilteredChannels = currentUnfilteredChannels.map((channel) => {
-                    channel.checked = false;
-                    return channel;
-                });
 
-                return newUnfilteredChannels;
-            });
-        }
-    }, [allChecked]);
+            return newUnfilteredChannels;
+        });
+
+        setAllChecked(checked);
+    };
 
     const handleChannelCheck = (e, id) => {
         const checked = e.target.checked;
@@ -358,7 +350,7 @@ function UploadSlackExportFileSetting() {
                                     <input
                                         type='checkbox'
                                         checked={allChecked}
-                                        onChange={(e) => setAllChecked(e.target.checked)}
+                                        onChange={handleAllChannelCheck}
                                     />
                                 </th>
                                 <th>
