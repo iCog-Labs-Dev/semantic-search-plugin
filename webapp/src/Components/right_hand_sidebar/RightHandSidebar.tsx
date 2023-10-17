@@ -3,19 +3,24 @@ import { GlobalState } from '@mattermost/types/lib/store'
 import React, { FormEvent, Fragment, useState } from 'react'
 import { Action, Store } from 'redux'
 
-import './App.css'
-import Error from './Error/Error'
-import Home from './Home/Home'
-import Loader from './Loader/Loader'
-import Result from './Result/Result'
+import Error from './error/Error'
+import Home from './home/Home'
+import Loader from './loader/Loader'
+import Result from './result/Result'
+
+import './rightHandSidebarStyle.css'
 
 type PayloadType = {
     isError?: boolean;
     text: string;
     context?: string;
-}
+};
 
-function App({store}: { store: Store<GlobalState, Action<Record<string, unknown>>> }) {
+function RHS({
+    store,
+}: {
+    store: Store<GlobalState, Action<Record<string, unknown>>>;
+}) {
     // eslint-disable-next-line no-process-env
     const apiURL = process.env.MM_PLUGIN_API_URL;
     const [loading, setLoading] = useState(false);
@@ -26,11 +31,18 @@ function App({store}: { store: Store<GlobalState, Action<Record<string, unknown>
     const handleSearchQuery = async (e: FormEvent) => {
         e.preventDefault();
 
+        // eslint-disable-next-line no-console
+        // console.log(store.getState().entities.users.currentUserId);
+
         if (searchInput === searchQuery && searchQuery !== '') {
             return;
         }
 
         setSearchQuery(searchInput);
+
+        // eslint-disable-next-line no-console
+        const currentUser = store.getState().entities.users.currentUserId;
+        console.log('', currentUser);
 
         setLoading(true);
         const fetchOptions = {
@@ -40,11 +52,12 @@ function App({store}: { store: Store<GlobalState, Action<Record<string, unknown>
             },
             body: JSON.stringify({
                 query: searchQuery,
+                user_id: currentUser,
             }),
         };
 
         try {
-            const res = await fetch(apiURL!, fetchOptions);
+            const res = await fetch(apiURL! + '/search', fetchOptions);
 
             const jsonRes = await res.json();
 
@@ -52,7 +65,7 @@ function App({store}: { store: Store<GlobalState, Action<Record<string, unknown>
                 throw Error('');
             }
 
-            const responsePayload = {text: jsonRes.response, context: jsonRes.metadata};
+            const responsePayload = {text: jsonRes.llm, context: jsonRes.context};
             setPayload(responsePayload);
 
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -60,7 +73,10 @@ function App({store}: { store: Store<GlobalState, Action<Record<string, unknown>
             // eslint-disable-next-line no-console
             console.warn('Error', err);
 
-            const errorPayload = {isError: true, text: 'Something went wrong. Please try again.'};
+            const errorPayload = {
+                isError: true,
+                text: 'Something went wrong. Please try again.',
+            };
             setPayload(errorPayload);
         } finally {
             setLoading(false);
@@ -71,8 +87,7 @@ function App({store}: { store: Store<GlobalState, Action<Record<string, unknown>
         <div className='ss-root'>
             <form
                 className='ss-search-wrapper'
-                onSubmit={handleSearchQuery}
-            >
+                onSubmit={handleSearchQuery}>
                 <div className='ss-search-icon'>
                     <i className='icon icon-magnify icon-18'/>
                 </div>
@@ -84,21 +99,26 @@ function App({store}: { store: Store<GlobalState, Action<Record<string, unknown>
                 />
             </form>
             <div className='ss-result-wrapper'>
-                { loading ? <Loader/> : <Fragment>
-                    { payload ? <Fragment>
-                        {
-                            payload.isError ? <Error
-                                error={payload}
-                            /> : <Result
-                                item={payload}
-                            />
-                        }
-                    </Fragment> : <Home/> }
-                </Fragment>
-                }
+                {loading ? (
+                    <Loader/>
+                ) : (
+                    <Fragment>
+                        {payload ? (
+                            <Fragment>
+                                {payload.isError ? (
+                                    <Error error={payload}/>
+                                ) : (
+                                    <Result item={payload}/>
+                                )}
+                            </Fragment>
+                        ) : (
+                            <Home/>
+                        )}
+                    </Fragment>
+                )}
             </div>
         </div>
     );
 }
 
-export default App;
+export default RHS;

@@ -12,8 +12,50 @@
         "bundle_path": "webapp/dist/main.js"
     },
     "settings_schema": {
-        "header": "",
-        "footer": "",
-        "settings": []
+        "header": "Configure your Mattermost Semantic Search Plugin",
+        "footer": "To report an issue, make a suggestion or a contribution, [check the repository](https://github.com/iCog-Labs-Dev/semantic-search-plugin).",
+        "settings": [
+            {
+                "key": "syncInterval",
+                "display_name": "Sync Interval:",
+                "type": "custom",
+                "help_text": "Number of minutes to wait before fetching new messages. Minimum is 1 minute, maximum is 1440 minutes (24 hours), and default is 15 minutes.",
+                "placeholder": "",
+                "default": 15
+            },
+            {
+                "key": "toggleSync",
+                "display_name": "Toggle Sync:",
+                "type": "custom",
+                "help_text": "Toggle the semantic search sync. If enabled, the plugin will fetch new messages every fetch interval. If disabled, the plugin will not fetch new messages. Default is true.",
+                "placeholder": "",
+                "default": null
+            },
+            {
+                "key": "resetSync",
+                "display_name": "Reset Sync:",
+                "type": "custom",
+                "help_text": "Reset the semantic search sync. This will reset the database based on the selected field(s). If \"Slack\" is selected, all slack messages will be deleted from the database. If \"Mattermost\" is selected, all Mattermost messages will be deleted from the database. If both are selected, all messages will be deleted from the database. Default is \"Slack\".",
+                "placeholder": "",
+                "default": null
+            },
+            {
+                "key": "timeLeftUntilNextSync",
+                "display_name": "Time Left Until Next Sync:",
+                "type": "custom",
+                "help_text": "Time remaining until the next fetch. This is a read-only field. If the plugin is syncing, this field will show the time remaining until the next fetch. If the plugin is not syncing, this field will show \"Not Syncing\".",
+                "placeholder": "",
+                "default": "Not Syncing"
+            },
+            {
+                "key": "uploadSlackExportFile",
+                "display_name": "Upload Slack Export File:",
+                "type": "custom",
+                "help_text": "Upload a Slack export file to the plugin. This will upload the file to the plugin and parse the file.",
+                "placeholder": "",
+                "default": null
+            }
+            
+        ]
     }
 }

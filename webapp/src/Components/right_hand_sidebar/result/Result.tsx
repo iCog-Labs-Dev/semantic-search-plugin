@@ -1,6 +1,6 @@
-import React, {Fragment} from 'react';
+import React from 'react'
 
-import './Result.css';
+import './resultStyle.css'
 
 function Result({item} : any) {
     return (
@@ -13,7 +13,7 @@ function Result({item} : any) {
 
                 <h3 className='ss-response-context-subtitle'> {'Context:'} </h3>
                 <div className='ss-response-context-container'>
-                    {item.context.map(({time, user_name, channel, message, score}: any) => {
+                    {item.context.map(({time, user_name, channel_name, message, score, access, channel_link, message_link, platform, user_profile_link}: any) => {
                         return (
                             <div
                                 className='ss-response-context'
@@ -26,7 +26,7 @@ function Result({item} : any) {
                                         </div>
                                         <div className='ss-rc-user-text'>
                                             <p className='ss-rc-user-name'> {user_name} </p>
-                                            <span> {`#${channel}`} </span>
+                                            <span> {`#${channel_name}`} </span>
                                         </div>
                                     </div>
                                     <div className='ss-rc-external-link'>

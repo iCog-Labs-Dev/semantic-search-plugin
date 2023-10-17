@@ -1,6 +1,6 @@
-import React from 'react';
+import React from 'react'
 
-import './Error.css';
+import './errorStyle.css'
 
 function Error({error} : any) {
     return (
