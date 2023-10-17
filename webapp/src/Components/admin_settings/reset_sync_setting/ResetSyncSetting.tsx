@@ -31,9 +31,7 @@ function RestartSyncSetting() {
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({
-                json: postObj,
-            }),
+            body: JSON.stringify(postObj),
         };
 
         setLoading(true);
