@@ -122,6 +122,17 @@
   height: 1.8rem;
 }
 
+.upload-slack-export-channel-table__access {
+  background-color: var(--button-bg);
+  color: var(--button-color);
+  border-radius: 2rem;
+  font-size: 1.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: fit-content;
+}
+
 .upload-slack-export-date {
   display: flex;
   align-items: center;

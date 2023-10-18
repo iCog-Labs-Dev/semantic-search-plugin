@@ -378,7 +378,11 @@ function UploadSlackExportFileSetting() {
                                     </td>
                                     <td>{channel.name}</td>
                                     <td>{channel.no_members}</td>
-                                    <td>{channel.access}</td>
+                                    <td>
+                                        <span className='upload-slack-export-channel-table__access'>
+                                            {channel.access === 'pub' ? 'Public' : 'Private'}
+                                        </span>
+                                    </td>
                                     <td className='upload-slack-export-date'>
                                         <input
                                             type='date'
