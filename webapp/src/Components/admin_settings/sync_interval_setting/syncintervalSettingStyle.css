@@ -65,3 +65,8 @@
   border: none;
   outline: none;
 }
+
+.ss-sync-interval-help-text {
+  margin-top: 1rem;
+  color: rgba(var(--center-channel-color-rgb), 0.72);
+}

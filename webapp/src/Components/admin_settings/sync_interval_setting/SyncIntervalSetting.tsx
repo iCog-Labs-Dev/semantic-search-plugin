@@ -1,8 +1,8 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { Fragment, useCallback, useEffect, useState } from 'react'
 
 import './syncintervalSettingStyle.css'
 
-function SyncIntervalSetting() {
+function SyncIntervalSetting(props: { helpText: { props: { text: string } } }) {
     // eslint-disable-next-line no-process-env
     const apiURL = process.env.MM_PLUGIN_API_URL;
     const [loading, setLoading] = useState(false);
@@ -128,37 +128,42 @@ function SyncIntervalSetting() {
     };
 
     return (
-        <div className='ss-setting-sync-interval'>
-            {/* TODO: wrap the input fields in a form element */}
-            <div className='ss-setting-sync-interval__item'>
-                <input
-                    className='ss-setting-sync-interval-input'
-                    type='number'
-                    min={0}
-                    max={23}
-                    value={syncInterval.hour}
-                    onChange={handleSyncIntervalHourChange}
-                />
-                <span className='ss-setting-sync-interval-label'>{ 'hours' }</span>
+        <Fragment>
+            <div className='ss-setting-sync-interval'>
+                {/* TODO: wrap the input fields in a form element */}
+                <div className='ss-setting-sync-interval__item'>
+                    <input
+                        className='ss-setting-sync-interval-input'
+                        type='number'
+                        min={0}
+                        max={23}
+                        value={syncInterval.hour}
+                        onChange={handleSyncIntervalHourChange}
+                    />
+                    <span className='ss-setting-sync-interval-label'>{ 'hours' }</span>
+                </div>
+                <span className='ss-setting-sync-interval-divider'>{ ':' }</span>
+                <div className='ss-setting-sync-interval__item'>
+                    <input
+                        className='ss-setting-sync-interval-input'
+                        type='number'
+                        min={0}
+                        max={59}
+                        value={syncInterval.minute}
+                        onChange={handleSyncIntervalMinuteChange}
+                    />
+                    <span className='ss-setting-sync-interval-label'>{ 'minutes' }</span>
+                </div>
+                <button
+                    onClick={handleSyncIntervalSubmit}
+                    className='btn btn-primary'
+                    disabled={loading || (syncInterval.hour === 0 && syncInterval.minute === 0)}
+                > {'Save'} </button>
             </div>
-            <span className='ss-setting-sync-interval-divider'>{ ':' }</span>
-            <div className='ss-setting-sync-interval__item'>
-                <input
-                    className='ss-setting-sync-interval-input'
-                    type='number'
-                    min={0}
-                    max={59}
-                    value={syncInterval.minute}
-                    onChange={handleSyncIntervalMinuteChange}
-                />
-                <span className='ss-setting-sync-interval-label'>{ 'minutes' }</span>
-            </div>
-            <button
-                onClick={handleSyncIntervalSubmit}
-                className='btn btn-primary'
-                disabled={loading || (syncInterval.hour === 0 && syncInterval.minute === 0)}
-            > {'Save'} </button>
-        </div>
+            <p className='ss-sync-interval-help-text'>
+                {props.helpText.props.text}
+            </p>
+        </Fragment>
     );
 }
 

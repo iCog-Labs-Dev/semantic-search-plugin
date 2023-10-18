@@ -1,14 +1,14 @@
-import { GlobalState } from '@mattermost/types/lib/store'
-import React, { useEffect, useState } from 'react'
-import { Action, Store } from 'redux'
+import React, { Fragment, useEffect, useState } from 'react'
 
 import './toggleSyncSettingStyle.css'
 
-function ToggleSyncSetting({
-    store,
-}: {
-    store: Store<GlobalState, Action<Record<string, unknown>>>;
-}) {
+// {
+//     store,
+// }: {
+//     store: Store<GlobalState, Action<Record<string, unknown>>>;
+// }
+
+function ToggleSyncSetting(props: { helpText: { props: { text: string } } }) {
     // eslint-disable-next-line no-process-env
     const apiURL = process.env.MM_PLUGIN_API_URL;
     const [loading, setLoading] = useState(false);
@@ -125,17 +125,22 @@ function ToggleSyncSetting({
     };
 
     return (
-        <div className='ss-setting-form'>
-            <label className='switch'>
-                <input
-                    type='checkbox'
-                    checked={isSyncing}
-                    onChange={(e) => handleSetIsSyncing(e.target.checked)}
-                    disabled={loading}
-                />
-                <span className='slider round'/>
-            </label>
-        </div>
+        <Fragment>
+            <div className='ss-setting-toggle-sync'>
+                <label className='switch'>
+                    <input
+                        type='checkbox'
+                        checked={isSyncing}
+                        onChange={(e) => handleSetIsSyncing(e.target.checked)}
+                        disabled={loading}
+                    />
+                    <span className='slider round'/>
+                </label>
+            </div>
+            <p className='ss-toggle-sync-text'>
+                {props.helpText.props.text}
+            </p>
+        </Fragment>
     );
 }
 

@@ -3,7 +3,7 @@ import React, { Fragment, useCallback, useEffect, useState } from 'react'
 
 import './timeLeftUntilNextSyncSettingStyle.css'
 
-function TimeLeftUntilNextSyncSetting() {
+function TimeLeftUntilNextSyncSetting(props: { helpText: { props: { text: string } } }) {
     //eslint-disable-next-line no-process-env
     const apiURL = process.env.MM_PLUGIN_API_URL;
     const [loading, setLoading] = useState(false);
@@ -101,48 +101,53 @@ function TimeLeftUntilNextSyncSetting() {
 
     return (
         <Fragment>
-            {loading ? (
-                <p> {'Loading ...'} </p>
-            ) : (
-                <Fragment>
-                    {isSyncing ? (
-                        lastFetchTime === 0 ? (
-                            <p>{'Sync has not finished performing yet.'}</p>
+            <Fragment>
+                {loading ? (
+                    <p> {'Loading ...'} </p>
+                ) : (
+                    <Fragment>
+                        {isSyncing ? (
+                            lastFetchTime === 0 ? (
+                                <p>{'Sync has not finished performing yet.'}</p>
+                            ) : (
+                                <div className='ss-time-left-counter'>
+                                    <div className='ss-time-left-counter__item'>
+                                        <span className='ss-time-left-counter__item__number'>
+                                            { timeLeft.hours }
+                                        </span>
+                                        <span className='ss-time-left-counter__item__label'>
+                                            { 'Hours' }
+                                        </span>
+                                    </div>
+                                    <span className='ss-time-left-counter__divider'>{ ':' }</span>
+                                    <div className='ss-time-left-counter__item'>
+                                        <span className='ss-time-left-counter__item__number'>
+                                            { timeLeft.minutes }
+                                        </span>
+                                        <span className='ss-time-left-counter__item__label'>
+                                            { 'Minutes' }
+                                        </span>
+                                    </div>
+                                    <span className='ss-time-left-counter__divider'>{ ':' }</span>
+                                    <div className='ss-time-left-counter__item'>
+                                        <span className='ss-time-left-counter__item__number'>
+                                            { timeLeft.seconds }
+                                        </span>
+                                        <span className='ss-time-left-counter__item__label'>
+                                            { 'Seconds' }
+                                        </span>
+                                    </div>
+                                </div>
+                            )
                         ) : (
-                            <div className='ss-time-left-counter'>
-                                <div className='ss-time-left-counter__item'>
-                                    <span className='ss-time-left-counter__item__number'>
-                                        { timeLeft.hours }
-                                    </span>
-                                    <span className='ss-time-left-counter__item__label'>
-                                        { 'Hours' }
-                                    </span>
-                                </div>
-                                <span className='ss-time-left-counter__divider'>{ ':' }</span>
-                                <div className='ss-time-left-counter__item'>
-                                    <span className='ss-time-left-counter__item__number'>
-                                        { timeLeft.minutes }
-                                    </span>
-                                    <span className='ss-time-left-counter__item__label'>
-                                        { 'Minutes' }
-                                    </span>
-                                </div>
-                                <span className='ss-time-left-counter__divider'>{ ':' }</span>
-                                <div className='ss-time-left-counter__item'>
-                                    <span className='ss-time-left-counter__item__number'>
-                                        { timeLeft.seconds }
-                                    </span>
-                                    <span className='ss-time-left-counter__item__label'>
-                                        { 'Seconds' }
-                                    </span>
-                                </div>
-                            </div>
-                        )
-                    ) : (
-                        <p> {'Not Syncing ...'} </p>
-                    )}
-                </Fragment>
-            )}
+                            <p> {'Not Syncing ...'} </p>
+                        )}
+                    </Fragment>
+                )}
+            </Fragment>
+            <p className='ss-left-time-text'>
+                {props.helpText.props.text}
+            </p>
         </Fragment>
     );
 }

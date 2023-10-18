@@ -31,7 +31,7 @@ export default class Plugin {
 
         registry.registerAdminConsoleCustomSetting('syncInterval', SyncIntervalSetting, {showTitle: true});
 
-        registry.registerAdminConsoleCustomSetting('toggleSync', () => (<ToggleSyncSetting store={store}/>), {showTitle: true});
+        registry.registerAdminConsoleCustomSetting('toggleSync', ToggleSyncSetting, {showTitle: true});
 
         registry.registerAdminConsoleCustomSetting('resetSync', ResetSyncSetting, {showTitle: true});
 

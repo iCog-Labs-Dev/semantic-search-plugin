@@ -58,3 +58,8 @@ input:checked + .slider:before {
 .slider.round:before {
   border-radius: 50%;
 }
+
+.ss-toggle-sync-text {
+  margin-top: 1rem;
+  color: rgba(var(--center-channel-color-rgb), 0.72);
+}

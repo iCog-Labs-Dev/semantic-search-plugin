@@ -2,7 +2,7 @@ import React, { Fragment, useEffect, useState } from 'react'
 
 import './uploadSlackExportFileSetting.css'
 
-function UploadSlackExportFileSetting() {
+function UploadSlackExportFileSetting(props: { helpText: { props: { text: string } } }) {
     type Channel = {
         access: string;
         date_created: number;
@@ -306,121 +306,125 @@ function UploadSlackExportFileSetting() {
     };
 
     return (
-        <div className='upload-slack-export-container'>
-            <div className='upload-slack-export-action'>
-                <div className='upload-slack-export-action_file'>
-                    <input
-                        type='file'
-                        name='file'
-                        id='file'
-                        accept='.zip' // make sure to add other file types if any
-                        className='upload-slack-export-file-setting__upload'
-                        onChange={handleUpload}
-                    />
-                    <label
-                        htmlFor='file'
-                        className='upload-slack-export-file-setting__label'
-                    >
-                        <svg
-                            xmlns='http://www.w3.org/2000/svg'
-                            viewBox='0 0 24 24'
+        <Fragment>
+            <div className='upload-slack-export-container'>
+                <div className='upload-slack-export-action'>
+                    <div className='upload-slack-export-action_file'>
+                        <input
+                            type='file'
+                            name='file'
+                            id='file'
+                            accept='.zip' // make sure to add other file types if any
+                            className='upload-slack-export-file-setting__upload'
+                            onChange={handleUpload}
+                        />
+                        <label
+                            htmlFor='file'
+                            className='upload-slack-export-file-setting__label'
                         >
-                            <path d='M14,2L20,8V20A2,2 0 0,1 18,22H6A2,2 0 0,1 4,20V4A2,2 0 0,1 6,2H14M18,20V9H13V4H6V20H18M12,12L16,16H13.5V19H10.5V16H8L12,12Z'/>
-                        </svg>
-                        <span> {'Choose a file...'} </span>
-                    </label>
+                            <svg
+                                xmlns='http://www.w3.org/2000/svg'
+                                viewBox='0 0 24 24'
+                            >
+                                <path d='M14,2L20,8V20A2,2 0 0,1 18,22H6A2,2 0 0,1 4,20V4A2,2 0 0,1 6,2H14M18,20V9H13V4H6V20H18M12,12L16,16H13.5V19H10.5V16H8L12,12Z'/>
+                            </svg>
+                            <span> {'Choose a file...'} </span>
+                        </label>
+                    </div>
+                    <div>
+                        {unfilteredChannels.length > 0 && (
+                            <button
+                                className='upload-slack-export-action__button'
+                                onClick={saveSlackData}
+                                disabled={noneChecked}
+                            >
+                                {loading ? 'Saving...' : 'Save'}
+                            </button>
+                        )}
+                    </div>
                 </div>
-                <div>
-                    {unfilteredChannels.length > 0 && (
-                        <button
-                            className='upload-slack-export-action__button'
-                            onClick={saveSlackData}
-                            disabled={noneChecked}
-                        >
-                            {loading ? 'Saving...' : 'Save'}
-                        </button>
-                    )}
-                </div>
-            </div>
-            {unfilteredChannels.length > 0 ? (
-                <div className='upload-slack-export-channel-table-container'>
-                    <table className='upload-slack-export-channel-table'>
-                        <thead className='upload-slack-export-channel-table_head'>
-                            <tr>
-                                <th>
-                                    <input
-                                        type='checkbox'
-                                        checked={allChecked}
-                                        onChange={handleAllChannelCheck}
-                                    />
-                                </th>
-                                <th>
-                                    <span>{'Channel Name'}</span>
-                                </th>
-                                <th>
-                                    <span>{'# Members'}</span>
-                                </th>
-                                <th>
-                                    <span>{'Type'}</span>
-                                </th>
-                                <th>
-                                    <span>{'Date Range'}</span>
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody className='upload-slack-export-channel-table_body'>
-                            {unfilteredChannels.map((channel) => (
-                                <tr key={channel.id}>
-                                    <td>
+                {unfilteredChannels.length > 0 ? (
+                    <div className='upload-slack-export-channel-table-container'>
+                        <table className='upload-slack-export-channel-table'>
+                            <thead className='upload-slack-export-channel-table_head'>
+                                <tr>
+                                    <th>
                                         <input
                                             type='checkbox'
-                                            checked={channel.checked}
-                                            onChange={(e) => handleChannelCheck(e, channel.id)}
+                                            checked={allChecked}
+                                            onChange={handleAllChannelCheck}
                                         />
-                                    </td>
-                                    <td>{channel.name}</td>
-                                    <td>{channel.no_members}</td>
-                                    <td>
-                                        <span className='upload-slack-export-channel-table__access'>
-                                            {channel.access === 'pub' ? 'Public' : 'Private'}
-                                        </span>
-                                    </td>
-                                    <td className='upload-slack-export-date'>
-                                        <input
-                                            type='date'
-                                            className='upload-slack-export-date-input'
-
-                                            min={formatDate(channel.id, channel.date_created * 1000)}
-
-                                            // min='2023-10-01'
-                                            max={formatDate(channel.id, Date.now())}
-                                            onChange={(e) => handleStartDateChange(e, channel.id)}
-                                        />
-                                        <span>{'to'}</span>
-                                        <input
-                                            type='date'
-                                            className='upload-slack-export-date-input'
-                                            min={calcEndDateMin(channel.id)}
-                                            max={formatDate(channel.id, Date.now())}
-                                            onChange={(e) => handleEndDateChange(e, channel.id)}
-                                        />
-                                    </td>
+                                    </th>
+                                    <th>
+                                        <span>{'Channel Name'}</span>
+                                    </th>
+                                    <th>
+                                        <span>{'# Members'}</span>
+                                    </th>
+                                    <th>
+                                        <span>{'Type'}</span>
+                                    </th>
+                                    <th>
+                                        <span>{'Date Range'}</span>
+                                    </th>
                                 </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                </div>
-            ) : (
-                <Fragment>
-                    {isUploaded ? (
-                        <p>{ 'Upload Successful' }</p>
-                    ) : (
-                        <p>{ 'Select slack export file ...' }</p>
-                    )}
-                </Fragment>
-            )}
-        </div>
+                            </thead>
+                            <tbody className='upload-slack-export-channel-table_body'>
+                                {unfilteredChannels.map((channel) => (
+                                    <tr key={channel.id}>
+                                        <td>
+                                            <input
+                                                type='checkbox'
+                                                checked={channel.checked}
+                                                onChange={(e) => handleChannelCheck(e, channel.id)}
+                                            />
+                                        </td>
+                                        <td>{channel.name}</td>
+                                        <td>{channel.no_members}</td>
+                                        <td>
+                                            <span className='upload-slack-export-channel-table__access'>
+                                                {channel.access === 'pub' ? 'Public' : 'Private'}
+                                            </span>
+                                        </td>
+                                        <td className='upload-slack-export-date'>
+                                            <input
+                                                type='date'
+                                                className='upload-slack-export-date-input'
 
+                                                min={formatDate(channel.id, channel.date_created * 1000)}
+
+                                                // min='2023-10-01'
+                                                max={formatDate(channel.id, Date.now())}
+                                                onChange={(e) => handleStartDateChange(e, channel.id)}
+                                            />
+                                            <span>{'to'}</span>
+                                            <input
+                                                type='date'
+                                                className='upload-slack-export-date-input'
+                                                min={calcEndDateMin(channel.id)}
+                                                max={formatDate(channel.id, Date.now())}
+                                                onChange={(e) => handleEndDateChange(e, channel.id)}
+                                            />
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+                ) : (
+                    <div className='upload-slack-export-feedback'>
+                        {isUploaded ? (
+                            <p>{ 'Upload Successful' }</p>
+                        ) : (
+                            <p>{ 'Select slack export file ...' }</p>
+                        )}
+                    </div>
+                )}
+            </div>
+            <p className='ss-slack-export-text'>
+                {props.helpText.props.text}
+            </p>
+        </Fragment>
     );
 }
 

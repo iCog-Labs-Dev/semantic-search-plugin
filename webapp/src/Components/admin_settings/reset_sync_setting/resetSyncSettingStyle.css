@@ -1,21 +1,26 @@
-.ss-restart-container {
+.ss-reset-container {
     display: flex;
     align-items: center;
 }
 
-.ss-restart-container input[type="checkbox"] {
+.ss-reset-container input[type="checkbox"] {
     margin-right: 1rem;
     text-align: center;
     width: 1.8rem;
     height: 1.8rem;
 }
 
-.ss-restart-container label {
+.ss-reset-container label {
     margin-right: 2rem;
     margin-bottom: 0;
     font-weight: 500;
 }
 
-.ss-restart-container button {
+.ss-reset-container button {
     margin-left: 1rem;
+}
+
+.ss-reset-help-text {
+    margin-top: 1rem;
+    color: rgba(var(--center-channel-color-rgb), 0.72);
 }

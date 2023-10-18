@@ -1,8 +1,8 @@
-import React, { useState } from 'react'
+import React, { Fragment, useState } from 'react'
 
 import './resetSyncSettingStyle.css'
 
-function RestartSyncSetting() {
+function ResetSyncSetting(props: { helpText: { props: { text: string } } }) {
     // eslint-disable-next-line no-process-env
     const apiURL = process.env.MM_PLUGIN_API_URL;
     const [loading, setLoading] = useState(false);
@@ -14,7 +14,7 @@ function RestartSyncSetting() {
         setSlackChecked(false);
     };
 
-    const handleRestartSync = async (e) => {
+    const handleResetSync = async (e) => {
         e.preventDefault();
 
         if (!mattermostChecked && !slackChecked) {
@@ -55,32 +55,37 @@ function RestartSyncSetting() {
     };
 
     return (
-        <div className='ss-restart-container'>
-            <input
-                id='mm'
-                type='checkbox'
-                checked={mattermostChecked}
-                onChange={(e) => setMattermostChecked(e.target.checked)}
-            />
-            <label htmlFor='mm'>{'Mattermost'}</label>
-            <input
-                id='sl'
-                type='checkbox'
-                checked={slackChecked}
-                onChange={(e) => setSlackChecked(e.target.checked)}
-            />
-            <label htmlFor='sl'>{'Slack'}</label>
-            <button
-                type='button'
-                className='btn btn-primary'
-                disabled={loading || (!mattermostChecked && !slackChecked)}
-                onClick={handleRestartSync}
-            >
-                <i className='fa fa-refresh'/>
-                {'Reset'}
-            </button>
-        </div>
+        <Fragment>
+            <div className='ss-reset-container'>
+                <input
+                    id='mm'
+                    type='checkbox'
+                    checked={mattermostChecked}
+                    onChange={(e) => setMattermostChecked(e.target.checked)}
+                />
+                <label htmlFor='mm'>{'Mattermost'}</label>
+                <input
+                    id='sl'
+                    type='checkbox'
+                    checked={slackChecked}
+                    onChange={(e) => setSlackChecked(e.target.checked)}
+                />
+                <label htmlFor='sl'>{'Slack'}</label>
+                <button
+                    type='button'
+                    className='btn btn-primary'
+                    disabled={loading || (!mattermostChecked && !slackChecked)}
+                    onClick={handleResetSync}
+                >
+                    <i className='fa fa-refresh'/>
+                    {'Reset'}
+                </button>
+            </div>
+            <p className='ss-reset-help-text'>
+                {props.helpText.props.text}
+            </p>
+        </Fragment>
     );
 }
 
-export default RestartSyncSetting;
+export default ResetSyncSetting;

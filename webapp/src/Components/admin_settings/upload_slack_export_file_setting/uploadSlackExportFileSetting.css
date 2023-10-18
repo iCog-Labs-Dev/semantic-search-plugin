@@ -157,3 +157,12 @@
 .upload-slack-export-date-input:hover {
   border: 1px solid rgba(var(--center-channel-color-rgb), 0.16);
 }
+
+.upload-slack-export-feedback {
+  margin-top: -1rem;
+}
+
+.ss-slack-export-text {
+  margin-top: 1rem;
+  color: rgba(var(--center-channel-color-rgb), 0.72);
+}
