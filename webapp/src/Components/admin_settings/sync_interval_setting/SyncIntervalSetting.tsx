@@ -16,6 +16,7 @@ function SyncIntervalSetting() {
 
         const res = await fetch(`${apiURL}/`, {
             method: 'GET',
+            credentials: 'include',
         });
 
         if (res.status !== 200) {
@@ -100,6 +101,7 @@ function SyncIntervalSetting() {
             headers: {
                 'Content-Type': 'application/json',
             },
+            credentials: 'include',
             body: JSON.stringify(reqObj),
         };
 

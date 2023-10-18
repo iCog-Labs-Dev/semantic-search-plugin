@@ -22,6 +22,7 @@ function ToggleSyncSetting({
                 headers: {
                     'Content-Type': 'application/json',
                 },
+                credentials: 'include',
             };
 
             setLoading(true);
@@ -48,16 +49,18 @@ function ToggleSyncSetting({
     }, []);
 
     const startSync = async () => {
-        const postObj = {
-            mm_api_url: store.getState().entities.general.config.SiteURL + '/api/v4',
-        };
+        // const postObj = {
+        //     mm_api_url: store.getState().entities.general.config.SiteURL + '/api/v4',
+        // };
 
         const postOptions = {
-            method: 'POST',
+            method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify(postObj),
+            credentials: 'include',
+
+            // body: JSON.stringify(postObj),
         };
 
         try {
@@ -67,14 +70,14 @@ function ToggleSyncSetting({
 
             const jsonRes = await res.json();
 
-            // handleSetIsSyncing(jsonRes.is_syncing);
+            console.log(jsonRes);
 
-            // eslint-disable-next-line no-console
-            console.log('start sync', jsonRes);
+            return jsonRes.is_syncing;
         } catch (err: any) {
-            // handleSetIsSyncing(false);
             // eslint-disable-next-line no-console
             console.warn('Error', err);
+
+            return false;
         }
     };
 
@@ -84,6 +87,7 @@ function ToggleSyncSetting({
             headers: {
                 'Content-Type': 'application/json',
             },
+            credentials: 'include',
         };
 
         try {
@@ -93,61 +97,31 @@ function ToggleSyncSetting({
 
             const jsonRes = await res.json();
 
-            // handleSetIsSyncing(jsonRes.is_syncing);
-
-            // eslint-disable-next-line no-console
-            console.log('stop sync', jsonRes);
+            return jsonRes.is_syncing;
         } catch (err: any) {
-            // handleSetIsSyncing(true);
             // eslint-disable-next-line no-console
             console.warn('Error', err);
+            return true;
         }
     };
 
-    const postPersonalAccessToken = async () => {
-        const postObj = {
-            personal_access_token: '15dzsi3wejbofdub1rn4brs5ir',
-        };
-
-        const postOptions = {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(postObj),
-        };
-
-        try {
-            const api = `${apiURL}/set_personal_access_token`;
-
-            const res = await fetch(api!, postOptions);
-
-            const jsonRes = await res.json();
-
-            // eslint-disable-next-line no-console
-            console.log('personal access token: ', jsonRes);
-        } catch (err: any) {
-        // eslint-disable-next-line no-console
-            console.warn('Error', err);
-        }
-    };
-
-    const handleSetIsSyncing = (checked: boolean) => {
+    const handleSetIsSyncing = async (checked: boolean) => {
         setLoading(true);
 
-        setIsSyncing((currentIsSyncingValue) => {
-            if (checked && !currentIsSyncingValue) {
-                if (lastFetchTime === 0) {
-                    postPersonalAccessToken();
-                }
-                startSync();
-            } else if (!checked && currentIsSyncingValue) {
-                stopSync();
+        try {
+            if (checked) {
+                const syncStartRes = await startSync();
+                setIsSyncing(syncStartRes);
+            } else {
+                const syncStoptRes = await stopSync();
+                setIsSyncing(syncStoptRes);
             }
-            return checked;
-        });
-
-        setLoading(false);
+        } catch (err: any) {
+            // eslint-disable-next-line no-console
+            console.warn('Error', err);
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (

@@ -26,6 +26,7 @@ function TimeLeftUntilNextSyncSetting() {
 
         const res = await fetch(`${apiURL}/`, {
             method: 'GET',
+            credentials: 'include',
         });
 
         if (res.status !== 200) {
@@ -54,6 +55,7 @@ function TimeLeftUntilNextSyncSetting() {
     }, []);
 
     useEffect(() => {
+        console.log('LastFetchTime: ', lastFetchTime);
         const remainingTime = (lastFetchTime + fetchInterval) - new Date().getTime();
 
         let firstCountDown = remainingTime;

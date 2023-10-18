@@ -56,6 +56,7 @@ function UploadSlackExportFileSetting() {
             // headers: {
             //     'Content-Type': 'multipart/form-data',
             // },
+            credentials: 'include',
             body: formData,
         });
 
@@ -278,6 +279,7 @@ function UploadSlackExportFileSetting() {
             headers: {
                 'Content-Type': 'application/json',
             },
+            credentials: 'include',
             body: JSON.stringify(postObj),
         };
 

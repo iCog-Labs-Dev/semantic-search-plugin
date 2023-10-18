@@ -61,6 +61,7 @@ function RHS({
             headers: {
                 'Content-Type': 'application/json',
             },
+            credentials: 'include',
             body: JSON.stringify({
                 query: searchQuery,
                 user_id: currentUser,
