@@ -65,8 +65,17 @@ function Result({item} : any) {
                                             {` ${user_name.slice(0, 1)} `}
                                         </div>
                                         <div className='ss-rc-user-text'>
-                                            <p className='ss-rc-user-name'> {user_name} </p>
-                                            <span> {`#${channel_name}`} </span>
+                                            <a
+                                                className='ss-rc-user-name'
+                                                href={source === 'mm' ? user_dm_link : ''}
+                                                target='_blank'
+                                                rel='noreferrer'
+                                            > {user_name} </a>
+                                            <a
+                                                href={source === 'mm' ? channel_link : ''}
+                                                target='_blank'
+                                                rel='noreferrer'
+                                            > {`#${channel_name}`} </a>
                                         </div>
                                     </div>
                                     <div
