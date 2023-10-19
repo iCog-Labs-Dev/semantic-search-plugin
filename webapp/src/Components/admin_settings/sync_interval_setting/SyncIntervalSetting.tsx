@@ -6,46 +6,78 @@ function SyncIntervalSetting(props: { helpText: { props: { text: string } } }) {
     // eslint-disable-next-line no-process-env
     const apiURL = process.env.MM_PLUGIN_API_URL;
     const [loading, setLoading] = useState(false);
+    const [hasError, setHasError] = useState(false);
+    const [errorMessage, setErrorMessage] = useState('');
     const [syncInterval, setSyncInterval] = useState({
         hour: 0,
         minute: 0,
     });
 
     const syncWithServer = useCallback(async () => {
-        setLoading(true);
-
-        const res = await fetch(`${apiURL}/`, {
+        const fetchOptions = {
             method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
             credentials: 'include',
-        });
-
-        if (res.status !== 200) {
-            // eslint-disable-next-line no-console
-            console.error('failed to sync with server');
-        }
-
-        const jsonRes = await res.json();
-
-        const fetchedInterval = {
-            hour: Math.floor(jsonRes.fetch_interval / (60 * 60)),
-            minute: Math.floor((jsonRes.fetch_interval % (60 * 60)) / (60)),
         };
 
-        // eslint-disable-next-line no-console
-        // console.log('jsonRes.fetch_interval', fetchedInterval);
+        setLoading(true);
 
-        setSyncInterval(fetchedInterval);
+        let response;
 
-        setLoading(false);
+        try {
+            const api = `${apiURL}/`;
+
+            response = await fetch(api!, fetchOptions);
+        } catch (err: any) {
+            // eslint-disable-next-line no-console
+            console.warn('Error', err);
+        } finally {
+            setLoading(false);
+        }
+
+        if (response?.ok) {
+            const jsonRes = await response.json();
+
+            const fetchedInterval = {
+                hour: Math.floor(jsonRes.fetch_interval / (60 * 60)),
+                minute: Math.floor((jsonRes.fetch_interval % (60 * 60)) / (60)),
+            };
+
+            // eslint-disable-next-line no-console
+            // console.log('jsonRes.fetch_interval', fetchedInterval);
+
+            setSyncInterval(fetchedInterval);
+        } else {
+            const jsonErr = await response?.json();
+
+            setHasError(true);
+            setErrorMessage(jsonErr.message);
+        }
     }, [apiURL]);
 
     useEffect(() => {
         syncWithServer();
     }, []);
 
-    // useEffect(() => {
+    useEffect(() => {
+        if (loading) {
+            setHasError(false);
+            setErrorMessage('');
+        }
+    }, [loading]);
 
-    // }, [syncInterval]);
+    useEffect(() => {
+        if (hasError) {
+            setLoading(false);
+
+            setTimeout(() => {
+                setHasError(false);
+                setErrorMessage('');
+            }, 5000);
+        }
+    }, [hasError]);
 
     const handleSyncIntervalHourChange = (e) => {
         e.preventDefault();
@@ -110,20 +142,28 @@ function SyncIntervalSetting(props: { helpText: { props: { text: string } } }) {
 
         setLoading(true);
 
+        let response;
+
         try {
             const api = `${apiURL}/set_fetch_interval`;
 
-            const res = await fetch(api!, postOptions);
-
-            const jsonRes = await res.json();
-
-            // eslint-disable-next-line no-console
-            // console.log('jsonRes', jsonRes);
+            response = await fetch(api!, postOptions);
         } catch (err: any) {
             // eslint-disable-next-line no-console
             console.warn('Error', err);
         } finally {
             setLoading(false);
+        }
+
+        if (response?.ok) {
+            const jsonRes = await response.json();
+            // eslint-disable-next-line no-console
+            console.log('jsonRes', jsonRes);
+        } else {
+            const jsonErr = await response?.json();
+
+            setHasError(true);
+            setErrorMessage(jsonErr.message);
         }
     };
 
@@ -160,6 +200,12 @@ function SyncIntervalSetting(props: { helpText: { props: { text: string } } }) {
                     disabled={loading || (syncInterval.hour === 0 && syncInterval.minute === 0)}
                 > {'Save'} </button>
             </div>
+            <p
+                className='ss-sync-interval-error-message'
+                style={{display: hasError ? 'block' : 'none'}}
+            >
+                {errorMessage}
+            </p>
             <p className='ss-sync-interval-help-text'>
                 {props.helpText.props.text}
             </p>

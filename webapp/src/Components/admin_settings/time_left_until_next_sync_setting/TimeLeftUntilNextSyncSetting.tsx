@@ -7,6 +7,8 @@ function TimeLeftUntilNextSyncSetting(props: { helpText: { props: { text: string
     //eslint-disable-next-line no-process-env
     const apiURL = process.env.MM_PLUGIN_API_URL;
     const [loading, setLoading] = useState(false);
+    const [hasError, setHasError] = useState(false);
+    const [errorMessage, setErrorMessage] = useState('');
     const [timeLeft, setTimeLeft] = useState({
         hours: 0,
         minutes: 0,
@@ -22,28 +24,41 @@ function TimeLeftUntilNextSyncSetting(props: { helpText: { props: { text: string
     const [countDown, setCountDown] = useState(0);
 
     const syncWithServer = useCallback(async () => {
+        const fetchOptions = {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            credentials: 'include',
+        };
+
         setLoading(true);
 
-        const res = await fetch(`${apiURL}/`, {
-            method: 'GET',
-            credentials: 'include',
-        });
+        let response;
 
-        if (res.status !== 200) {
+        try {
+            const api = `${apiURL}/`;
+
+            response = await fetch(api!, fetchOptions);
+        } catch (err: any) {
             // eslint-disable-next-line no-console
-            console.error('failed to sync with server');
+            console.warn('Error', err);
+        } finally {
+            setLoading(false);
         }
 
-        const jsonRes = await res.json();
+        if (response?.ok) {
+            const jsonRes = await response.json();
 
-        // eslint-disable-next-line no-console
-        // console.log('time left jsonRes', jsonRes);
+            setLastFetchTime(jsonRes.last_fetch_time);
+            setFetchInterval(jsonRes.fetch_interval * 1000);
+            setIsSyncing(jsonRes.is_syncing);
+        } else {
+            const jsonErr = await response?.json();
 
-        setLastFetchTime(jsonRes.last_fetch_time);
-        setFetchInterval(jsonRes.fetch_interval * 1000);
-        setIsSyncing(jsonRes.is_syncing);
-
-        setLoading(false);
+            setHasError(true);
+            setErrorMessage(jsonErr.message);
+        }
     }, [apiURL]);
 
     useEffect(() => {
@@ -99,6 +114,24 @@ function TimeLeftUntilNextSyncSetting(props: { helpText: { props: { text: string
         return () => clearInterval(interval);
     }, [countDown, lastFetchTime, fetchInterval]);
 
+    useEffect(() => {
+        if (loading) {
+            setHasError(false);
+            setErrorMessage('');
+        }
+    }, [loading]);
+
+    useEffect(() => {
+        if (hasError) {
+            setLoading(false);
+
+            setTimeout(() => {
+                setHasError(false);
+                setErrorMessage('');
+            }, 5000);
+        }
+    }, [hasError]);
+
     return (
         <Fragment>
             <Fragment>
@@ -145,6 +178,12 @@ function TimeLeftUntilNextSyncSetting(props: { helpText: { props: { text: string
                     </Fragment>
                 )}
             </Fragment>
+            <p
+                className='ss-left-time-error-message'
+                style={{display: hasError ? 'block' : 'none'}}
+            >
+                {errorMessage}
+            </p>
             <p className='ss-left-time-text'>
                 {props.helpText.props.text}
             </p>

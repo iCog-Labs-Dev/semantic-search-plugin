@@ -59,6 +59,12 @@ input:checked + .slider:before {
   border-radius: 50%;
 }
 
+.ss-toggle-sync-error-message {
+  color: var(--error-text);
+  font-size: 12px;
+  margin-top: 0.5rem;
+}
+
 .ss-toggle-sync-text {
   margin-top: 1rem;
   color: rgba(var(--center-channel-color-rgb), 0.72);

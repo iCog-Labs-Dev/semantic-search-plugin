@@ -12,6 +12,8 @@ function ToggleSyncSetting(props: { helpText: { props: { text: string } } }) {
     // eslint-disable-next-line no-process-env
     const apiURL = process.env.MM_PLUGIN_API_URL;
     const [loading, setLoading] = useState(false);
+    const [hasError, setHasError] = useState(false);
+    const [errorMessage, setErrorMessage] = useState('');
     const [isSyncing, setIsSyncing] = useState<boolean>();
     const [lastFetchTime, setLastFetchTime] = useState<number>();
 
@@ -27,26 +29,54 @@ function ToggleSyncSetting(props: { helpText: { props: { text: string } } }) {
 
             setLoading(true);
 
+            let response;
+
             try {
                 const api = `${apiURL}/`;
 
-                const res = await fetch(api!, fetchOptions);
-
-                const jsonRes = await res.json();
-
-                setLastFetchTime(jsonRes.last_fetch_time); // used to check if the sync is running for the first time
-
-                handleSetIsSyncing(jsonRes.is_syncing);
+                response = await fetch(api!, fetchOptions);
             } catch (err: any) {
                 // eslint-disable-next-line no-console
                 console.warn('Error', err);
             } finally {
                 setLoading(false);
             }
+
+            if (response?.ok) {
+                const jsonRes = await response.json();
+
+                setIsSyncing(jsonRes.is_syncing);
+                setLastFetchTime(jsonRes.last_fetch_time); // used to check if the sync is running for the first time
+            } else {
+                const jsonErr = await response?.json();
+
+                setHasError(true);
+                setErrorMessage(jsonErr.message);
+
+                setIsSyncing(false);
+            }
         };
 
         fetchSettings();
     }, []);
+
+    useEffect(() => {
+        if (loading) {
+            setHasError(false);
+            setErrorMessage('');
+        }
+    }, [loading]);
+
+    useEffect(() => {
+        if (hasError) {
+            setLoading(false);
+
+            setTimeout(() => {
+                setHasError(false);
+                setErrorMessage('');
+            }, 5000);
+        }
+    }, [hasError]);
 
     const startSync = async () => {
         // const postObj = {
@@ -63,22 +93,29 @@ function ToggleSyncSetting(props: { helpText: { props: { text: string } } }) {
             // body: JSON.stringify(postObj),
         };
 
+        let response;
+
         try {
             const api = `${apiURL}/start_sync`;
 
-            const res = await fetch(api!, postOptions);
-
-            const jsonRes = await res.json();
-
-            console.log(jsonRes);
-
-            return jsonRes.is_syncing;
+            response = await fetch(api!, postOptions);
         } catch (err: any) {
             // eslint-disable-next-line no-console
             console.warn('Error', err);
-
-            return false;
         }
+
+        if (response?.ok) {
+            const jsonRes = await response.json();
+
+            return jsonRes.is_syncing;
+        }
+
+        const jsonErr = await response?.json();
+
+        setHasError(true);
+        setErrorMessage(jsonErr.message);
+
+        return false;
     };
 
     const stopSync = async () => {
@@ -90,19 +127,29 @@ function ToggleSyncSetting(props: { helpText: { props: { text: string } } }) {
             credentials: 'include',
         };
 
+        let response;
+
         try {
             const api = `${apiURL}/stop_sync`;
 
-            const res = await fetch(api!, fetchOptions);
-
-            const jsonRes = await res.json();
-
-            return jsonRes.is_syncing;
+            response = await fetch(api!, fetchOptions);
         } catch (err: any) {
             // eslint-disable-next-line no-console
             console.warn('Error', err);
-            return true;
         }
+
+        if (response?.ok) {
+            const jsonRes = await response.json();
+
+            return jsonRes.is_syncing;
+        }
+
+        const jsonErr = await response?.json();
+
+        setHasError(true);
+        setErrorMessage(jsonErr.message);
+
+        return true;
     };
 
     const handleSetIsSyncing = async (checked: boolean) => {
@@ -137,6 +184,12 @@ function ToggleSyncSetting(props: { helpText: { props: { text: string } } }) {
                     <span className='slider round'/>
                 </label>
             </div>
+            <p
+                className='ss-toggle-sync-error-message'
+                style={{display: hasError ? 'block' : 'none'}}
+            >
+                {errorMessage}
+            </p>
             <p className='ss-toggle-sync-text'>
                 {props.helpText.props.text}
             </p>

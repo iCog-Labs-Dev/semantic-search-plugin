@@ -20,6 +20,12 @@
     margin-left: 1rem;
 }
 
+.ss-reset-help-error-message {
+    color: var(--error-text);
+    font-size: 12px;
+    margin-top: 0.5rem;
+  }
+
 .ss-reset-help-text {
     margin-top: 1rem;
     color: rgba(var(--center-channel-color-rgb), 0.72);

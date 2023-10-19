@@ -163,6 +163,12 @@
   margin-top: -1rem;
 }
 
+.ss-slack-export-error-message {
+  color: var(--error-text);
+  font-size: 12px;
+  margin-top: 0.5rem;
+}
+
 .ss-slack-export-text {
   margin-top: 1rem;
   color: rgba(var(--center-channel-color-rgb), 0.72);

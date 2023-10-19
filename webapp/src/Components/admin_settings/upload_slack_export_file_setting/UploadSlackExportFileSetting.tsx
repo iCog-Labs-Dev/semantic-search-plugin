@@ -18,6 +18,8 @@ function UploadSlackExportFileSetting(props: { helpText: { props: { text: string
     // eslint-disable-next-line no-process-env
     const apiURL = process.env.MM_PLUGIN_API_URL;
     const [loading, setLoading] = useState(false);
+    const [hasError, setHasError] = useState(false);
+    const [errorMessage, setErrorMessage] = useState('');
     const [allChecked, setAllChecked] = useState(false);
     const [unfilteredChannels, setUnfilteredChannels] = useState<Channel[]>([]);
     const [isUploaded, setIsUploaded] = useState(false);
@@ -48,7 +50,7 @@ function UploadSlackExportFileSetting(props: { helpText: { props: { text: string
 
         formData.append('file', file);
 
-        const res = await fetch(`${apiURL}/upload_slack_zip`, {
+        const fetchOptions = {
             method: 'POST',
 
             // DO NOT set the Content-Type header. The browser will set it for you, including the boundary parameter.
@@ -58,35 +60,52 @@ function UploadSlackExportFileSetting(props: { helpText: { props: { text: string
             // },
             credentials: 'include',
             body: formData,
-        });
+        };
 
-        if (res.status !== 200) {
+        setLoading(true);
+
+        let response;
+
+        try {
+            const api = `${apiURL}/upload_slack_zip`;
+
+            response = await fetch(api!, fetchOptions);
+        } catch (err: any) {
             // eslint-disable-next-line no-console
-            console.error('failed to upload file');
+            console.warn('Error', err);
+        } finally {
+            setLoading(false);
         }
 
-        const resJson = await res.json();
+        if (response?.ok) {
+            const resJson = await res.json();
 
-        // eslint-disable-next-line no-console
-        console.log('resJson', resJson);
+            // eslint-disable-next-line no-console
+            console.log('resJson', resJson);
 
-        const unfilteredChnls = resJson.map((channel) => {
-            if (!Object.prototype.hasOwnProperty.call(channel, 'checked')) {
-                channel.checked = false;
-            }
+            const unfilteredChnls = resJson.map((channel) => {
+                if (!Object.prototype.hasOwnProperty.call(channel, 'checked')) {
+                    channel.checked = false;
+                }
 
-            if (!Object.prototype.hasOwnProperty.call(channel, 'startDate')) {
-                channel.startDate = '';
-            }
+                if (!Object.prototype.hasOwnProperty.call(channel, 'startDate')) {
+                    channel.startDate = '';
+                }
 
-            if (!Object.prototype.hasOwnProperty.call(channel, 'endDate')) {
-                channel.endDate = '';
-            }
+                if (!Object.prototype.hasOwnProperty.call(channel, 'endDate')) {
+                    channel.endDate = '';
+                }
 
-            return channel;
-        });
+                return channel;
+            });
 
-        setUnfilteredChannels(unfilteredChnls);
+            setUnfilteredChannels(unfilteredChnls);
+        } else {
+            const jsonErr = await response?.json();
+
+            setHasError(true);
+            setErrorMessage(jsonErr.message);
+        }
     };
 
     useEffect(() => {
@@ -125,6 +144,24 @@ function UploadSlackExportFileSetting(props: { helpText: { props: { text: string
 
         setAllChecked(checked);
     };
+
+    useEffect(() => {
+        if (loading) {
+            setHasError(false);
+            setErrorMessage('');
+        }
+    }, [loading]);
+
+    useEffect(() => {
+        if (hasError) {
+            setLoading(false);
+
+            setTimeout(() => {
+                setHasError(false);
+                setErrorMessage('');
+            }, 5000);
+        }
+    }, [hasError]);
 
     const handleChannelCheck = (e, id) => {
         const checked = e.target.checked;
@@ -285,23 +322,27 @@ function UploadSlackExportFileSetting(props: { helpText: { props: { text: string
 
         setLoading(true);
 
+        let response;
+
         try {
             const api = `${apiURL}/store_slack_data`;
 
-            const res = await fetch(api!, postOptions);
-
-            // const jsonRes = await res.json();
-
-            // eslint-disable-next-line no-console
-            console.log('jsonRes', res.statusText);
-
-            setUnfilteredChannels([]);
-            setIsUploaded(true);
+            response = await fetch(api!, postOptions);
         } catch (err: any) {
             // eslint-disable-next-line no-console
             console.warn('Error', err);
         } finally {
             setLoading(false);
+        }
+
+        if (response?.ok) {
+            setUnfilteredChannels([]);
+            setIsUploaded(true);
+        } else {
+            const jsonErr = await response?.json();
+
+            setHasError(true);
+            setErrorMessage(jsonErr.message);
         }
     };
 
@@ -421,6 +462,12 @@ function UploadSlackExportFileSetting(props: { helpText: { props: { text: string
                     </div>
                 )}
             </div>
+            <p
+                className='ss-slack-export-error-message'
+                style={{display: hasError ? 'block' : 'none'}}
+            >
+                {errorMessage}
+            </p>
             <p className='ss-slack-export-text'>
                 {props.helpText.props.text}
             </p>
