@@ -13,7 +13,7 @@
     },
     "settings_schema": {
         "header": "Configure your Mattermost Semantic Search Plugin",
-        "footer": "To report an issue, make a suggestion or a contribution, [check the repository](https://github.com/iCog-Labs-Dev/semantic-search-plugin).",
+        "footer": "To report an issue, make a suggestion or a contribution, [webapp](https://github.com/iCog-Labs-Dev/semantic-search-plugin) & [server](https://github.com/iCog-Labs-Dev/semantic-search-engine).",
         "settings": [
             {
                 "key": "syncInterval",
