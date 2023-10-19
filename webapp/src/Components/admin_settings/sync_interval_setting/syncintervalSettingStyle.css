@@ -66,9 +66,15 @@
   outline: none;
 }
 
+.ss-sync-interval-success-message {
+  color: var(--online-indicator);
+  font-size: 13px;
+  margin-top: 0.5rem;
+}
+
 .ss-sync-interval-error-message {
   color: var(--error-text);
-  font-size: 12px;
+  font-size: 13px;
   margin-top: 0.5rem;
 }
 

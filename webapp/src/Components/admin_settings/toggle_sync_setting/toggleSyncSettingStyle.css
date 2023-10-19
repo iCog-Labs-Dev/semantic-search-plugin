@@ -59,9 +59,15 @@ input:checked + .slider:before {
   border-radius: 50%;
 }
 
+.ss-toggle-sync-success-message {
+  color: var(--online-indicator);
+  font-size: 13px;
+  margin-top: 0.5rem;
+}
+
 .ss-toggle-sync-error-message {
   color: var(--error-text);
-  font-size: 12px;
+  font-size: 13px;
   margin-top: 0.5rem;
 }
 

@@ -11,7 +11,10 @@ import './toggleSyncSettingStyle.css'
 function ToggleSyncSetting(props: { helpText: { props: { text: string } } }) {
     // eslint-disable-next-line no-process-env
     const apiURL = process.env.MM_PLUGIN_API_URL;
+    const successMessage = 'Sync status changed successfully';
+
     const [loading, setLoading] = useState(false);
+    const [wasSuccessful, setWasSuccessful] = useState(false);
     const [hasError, setHasError] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
     const [isSyncing, setIsSyncing] = useState<boolean>();
@@ -81,6 +84,17 @@ function ToggleSyncSetting(props: { helpText: { props: { text: string } } }) {
         }
     }, [hasError]);
 
+    useEffect(() => {
+        if (wasSuccessful) {
+            setLoading(false);
+
+            setTimeout(() => {
+                setWasSuccessful(false);
+                setErrorMessage('');
+            }, 5000);
+        }
+    }, [wasSuccessful]);
+
     const startSync = async () => {
         // const postObj = {
         //     mm_api_url: store.getState().entities.general.config.SiteURL + '/api/v4',
@@ -112,6 +126,8 @@ function ToggleSyncSetting(props: { helpText: { props: { text: string } } }) {
 
         if (response?.ok) {
             const jsonRes = await response.json();
+
+            setWasSuccessful(true);
 
             return jsonRes.is_syncing;
         }
@@ -149,6 +165,8 @@ function ToggleSyncSetting(props: { helpText: { props: { text: string } } }) {
 
         if (response?.ok) {
             const jsonRes = await response.json();
+
+            setWasSuccessful(true);
 
             return jsonRes.is_syncing;
         }
@@ -193,6 +211,12 @@ function ToggleSyncSetting(props: { helpText: { props: { text: string } } }) {
                     <span className='slider round'/>
                 </label>
             </div>
+            <p
+                className='ss-toggle-sync-success-message'
+                style={{display: wasSuccessful ? 'block' : 'none'}}
+            >
+                {successMessage}
+            </p>
             <p
                 className='ss-toggle-sync-error-message'
                 style={{display: hasError ? 'block' : 'none'}}

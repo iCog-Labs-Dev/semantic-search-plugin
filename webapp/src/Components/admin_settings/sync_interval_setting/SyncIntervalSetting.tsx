@@ -5,7 +5,10 @@ import './syncintervalSettingStyle.css'
 function SyncIntervalSetting(props: { helpText: { props: { text: string } } }) {
     // eslint-disable-next-line no-process-env
     const apiURL = process.env.MM_PLUGIN_API_URL;
+    const successMessage = 'Sync interval updated successfully';
+
     const [loading, setLoading] = useState(false);
+    const [wasSuccessful, setWasSuccessful] = useState(false);
     const [hasError, setHasError] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
     const [syncInterval, setSyncInterval] = useState({
@@ -81,6 +84,17 @@ function SyncIntervalSetting(props: { helpText: { props: { text: string } } }) {
             }, 5000);
         }
     }, [hasError]);
+
+    useEffect(() => {
+        if (wasSuccessful) {
+            setLoading(false);
+
+            setTimeout(() => {
+                setWasSuccessful(false);
+                setErrorMessage('');
+            }, 5000);
+        }
+    }, [wasSuccessful]);
 
     const handleSyncIntervalHourChange = (e) => {
         e.preventDefault();
@@ -162,9 +176,7 @@ function SyncIntervalSetting(props: { helpText: { props: { text: string } } }) {
         }
 
         if (response?.ok) {
-            const jsonRes = await response.json();
-            // eslint-disable-next-line no-console
-            console.log('jsonRes', jsonRes);
+            setWasSuccessful(true);
         } else {
             const jsonErr = await response?.json();
 
@@ -206,6 +218,12 @@ function SyncIntervalSetting(props: { helpText: { props: { text: string } } }) {
                     disabled={loading || (syncInterval.hour === 0 && syncInterval.minute === 0)}
                 > {'Save'} </button>
             </div>
+            <p
+                className='ss-sync-interval-success-message'
+                style={{display: wasSuccessful ? 'block' : 'none'}}
+            >
+                {successMessage}
+            </p>
             <p
                 className='ss-sync-interval-error-message'
                 style={{display: hasError ? 'block' : 'none'}}

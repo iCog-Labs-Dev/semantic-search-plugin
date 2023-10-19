@@ -461,7 +461,7 @@ function UploadSlackExportFileSetting(props: { helpText: { props: { text: string
                 ) : (
                     <div className='upload-slack-export-feedback'>
                         {isUploaded ? (
-                            <p>{ 'Upload Successful' }</p>
+                            <p style={{color: 'var(--online-indicator)'}}>{ 'Upload Successful' }</p>
                         ) : (
                             <p>{ 'Select slack export file ...' }</p>
                         )}

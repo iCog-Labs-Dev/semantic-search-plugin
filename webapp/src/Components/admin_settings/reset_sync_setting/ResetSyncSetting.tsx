@@ -5,7 +5,10 @@ import './resetSyncSettingStyle.css'
 function ResetSyncSetting(props: { helpText: { props: { text: string } } }) {
     // eslint-disable-next-line no-process-env
     const apiURL = process.env.MM_PLUGIN_API_URL;
+    const successMessage = 'Sync reset successfully';
+
     const [loading, setLoading] = useState(false);
+    const [wasSuccessful, setWasSuccessful] = useState(false);
     const [hasError, setHasError] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
     const [mattermostChecked, setMattermostChecked] = useState(false);
@@ -33,6 +36,17 @@ function ResetSyncSetting(props: { helpText: { props: { text: string } } }) {
             }, 5000);
         }
     }, [hasError]);
+
+    useEffect(() => {
+        if (wasSuccessful) {
+            setLoading(false);
+
+            setTimeout(() => {
+                setWasSuccessful(false);
+                setErrorMessage('');
+            }, 5000);
+        }
+    }, [wasSuccessful]);
 
     const handleResetSync = async (e) => {
         e.preventDefault();
@@ -74,6 +88,7 @@ function ResetSyncSetting(props: { helpText: { props: { text: string } } }) {
         }
 
         if (response?.ok) {
+            setWasSuccessful(true);
             restoreState();
         } else {
             const jsonErr = await response?.json();
@@ -110,6 +125,12 @@ function ResetSyncSetting(props: { helpText: { props: { text: string } } }) {
                     {'Reset'}
                 </button>
             </div>
+            <p
+                className='ss-reset-help-success-message'
+                style={{display: wasSuccessful ? 'block' : 'none'}}
+            >
+                {successMessage}
+            </p>
             <p
                 className='ss-reset-help-error-message'
                 style={{display: hasError ? 'block' : 'none'}}
