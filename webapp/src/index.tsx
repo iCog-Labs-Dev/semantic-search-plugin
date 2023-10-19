@@ -6,6 +6,7 @@ import { GlobalState } from '@mattermost/types/lib/store'
 
 import { manifest } from '@/manifest'
 
+import IsEngineOnlineSetting from './Components/admin_settings/is_engine_online_setting/IsEngineOnlineSetting'
 import ResetSyncSetting from './Components/admin_settings/reset_sync_setting/ResetSyncSetting'
 import SyncIntervalSetting from './Components/admin_settings/sync_interval_setting/SyncIntervalSetting'
 import TimeLeftUntilNextSyncSetting from './Components/admin_settings/time_left_until_next_sync_setting/TimeLeftUntilNextSyncSetting'
@@ -28,6 +29,8 @@ export default class Plugin {
             (): void => store.dispatch(toggleRHSPlugin),
             'Semantic search',
         );
+
+        registry.registerAdminConsoleCustomSetting('isEngineOnline', IsEngineOnlineSetting);
 
         registry.registerAdminConsoleCustomSetting('syncInterval', SyncIntervalSetting, {showTitle: true});
 

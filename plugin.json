@@ -16,6 +16,10 @@
         "footer": "To report an issue, make a suggestion or a contribution, [webapp](https://github.com/iCog-Labs-Dev/semantic-search-plugin) & [server](https://github.com/iCog-Labs-Dev/semantic-search-engine).",
         "settings": [
             {
+                "key": "isEngineOnline",
+                "type": "custom"
+            },
+            {
                 "key": "syncInterval",
                 "display_name": "Sync Interval:",
                 "type": "custom",

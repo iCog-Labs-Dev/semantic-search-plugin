@@ -105,12 +105,12 @@
 
 .ss-rc-user-text a {
     text-decoration: none;
+    color: var(--center-channel-color);
 }
 
 .ss-rc-user-name {
     font-size: 1.6rem;
     font-weight: bold;
-    color: var(--center-channel-color);
 }
 
 .ss-rc-external-link {
