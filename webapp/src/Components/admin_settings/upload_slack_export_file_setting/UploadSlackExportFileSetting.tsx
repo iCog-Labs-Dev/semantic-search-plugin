@@ -73,12 +73,15 @@ function UploadSlackExportFileSetting(props: { helpText: { props: { text: string
         } catch (err: any) {
             // eslint-disable-next-line no-console
             console.warn('Error', err);
+
+            setHasError(true);
+            setErrorMessage(err.message);
         } finally {
             setLoading(false);
         }
 
         if (response?.ok) {
-            const resJson = await res.json();
+            const resJson = await response.json();
 
             // eslint-disable-next-line no-console
             console.log('resJson', resJson);
@@ -331,6 +334,9 @@ function UploadSlackExportFileSetting(props: { helpText: { props: { text: string
         } catch (err: any) {
             // eslint-disable-next-line no-console
             console.warn('Error', err);
+
+            setHasError(true);
+            setErrorMessage(err.message);
         } finally {
             setLoading(false);
         }

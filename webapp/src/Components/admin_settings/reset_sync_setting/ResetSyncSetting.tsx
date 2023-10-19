@@ -66,6 +66,9 @@ function ResetSyncSetting(props: { helpText: { props: { text: string } } }) {
         } catch (err: any) {
             // eslint-disable-next-line no-console
             console.warn('Error', err);
+
+            setHasError(true);
+            setErrorMessage(err.message);
         } finally {
             setLoading(false);
         }
