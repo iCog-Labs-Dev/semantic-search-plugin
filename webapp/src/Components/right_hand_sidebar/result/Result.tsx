@@ -48,7 +48,7 @@ function Result({item} : any) {
                 {/* <i className='icon icon-check-circle-outline'/> */}
                 <ReactMarkdown className='ss-response-container_text'>{ item.text }</ReactMarkdown>
             </div>
-            {item.context ? <div className='ss-response-context-wrapper'>
+            {item.context.length > 0 ? <div className='ss-response-context-wrapper'>
 
                 <h3 className='ss-response-context-subtitle'> {'Context:'} </h3>
                 <div className='ss-response-context-container'>
