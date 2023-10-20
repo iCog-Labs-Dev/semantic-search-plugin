@@ -6,7 +6,7 @@ function IsEngineOnlineSetting() {
     const RETRYTIMEINSECONDS = 10000;
     // eslint-disable-next-line no-process-env
     const apiURL = process.env.MM_PLUGIN_API_URL;
-    const [isOnline, setIsOnline] = useState<boolean>();
+    const [isOnline, setIsOnline] = useState<boolean>(true);
     const [retryTime, setRetryTime] = useState<number>(RETRYTIMEINSECONDS);
 
     useEffect(() => {
@@ -46,10 +46,10 @@ function IsEngineOnlineSetting() {
                 style={{display: isOnline ? 'none' : 'flex', color: isOnline ? 'var(--online-indicator)' : 'var(--error-text)'}}
             >
                 <div className='is-engine-online-setting__icon'>
-                    <i className='icon fa fa-check'/>
+                    <i className={isOnline ? 'icon fa fa-check' : 'icon fa fa-exclamation'}/>
                 </div>
                 <div className='is-engine-online-setting__text'>
-                    { isOnline ? 'Engine is Online' : 'Engine is Offline'}
+                    { isOnline ? 'The Engine is Online' : 'The Engine is Offline'}
                 </div>
                 <div className='is-engine-online-setting__retry'>
                     { !isOnline && 'Retrying in: ' + (retryTime / 1000) }
