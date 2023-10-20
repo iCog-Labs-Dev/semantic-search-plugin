@@ -14,7 +14,7 @@ function IsEngineOnlineSetting() {
             let response;
             try {
                 response = await fetch(`${apiURL}/img`, {
-                    method: 'GET',
+                    method: 'HEAD',
                 });
             } catch (err) {
                 console.warn('err', err);
