@@ -1,11 +1,14 @@
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import ReactMarkdown from 'react-markdown'
 
 import './resultStyle.css'
 
 function Result({item} : any) {
+    // eslint-disable-next-line no-process-env
+    const apiUrl = process.env.MM_SERVICESETTINGS_SITEURL;
     const wrapperRef = useRef<HTMLDivElement>(null);
     const myButtonRef = useRef<HTMLButtonElement>(null);
+    const [isBusy, setIsBusy] = useState<boolean>(true);
 
     useEffect(() => {
         const handleScroll = () => scrollFunction(300);
@@ -39,6 +42,43 @@ function Result({item} : any) {
         }
     }
 
+    const getAvatarUrl = async (user_id: string) => {
+        const api = apiUrl + `/api/v4/users/${user_id}/image`;
+
+        const fetchOptions = {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            credentials: 'include',
+        };
+
+        const response = await fetch(api, fetchOptions);
+
+        const blob = await response.blob();
+
+        return URL.createObjectURL(blob);
+    };
+
+    useEffect(() => {
+        const updateContext = async () => {
+            if (item.context.length > 0) {
+                item.context = await Promise.all(item.context.map(async (contextItem: any) => {
+                    if (contextItem.source === 'mm') {
+                        const imgUrl = await getAvatarUrl(contextItem.user_id);
+                        contextItem.user_avatar = imgUrl;
+                    }
+
+                    return contextItem;
+                }));
+
+                setIsBusy(false);
+            }
+        };
+
+        updateContext();
+    }, []);
+
     return (
         <div
             ref={wrapperRef}
@@ -48,11 +88,11 @@ function Result({item} : any) {
                 {/* <i className='icon icon-check-circle-outline'/> */}
                 <ReactMarkdown className='ss-response-container_text'>{ item.text }</ReactMarkdown>
             </div>
-            {item.context.length > 0 ? <div className='ss-response-context-wrapper'>
+            {item.context.length > 0 && !isBusy ? <div className='ss-response-context-wrapper'>
 
                 <h3 className='ss-response-context-subtitle'> {'Context:'} </h3>
                 <div className='ss-response-context-container'>
-                    {item.context.map(({time, user_name, channel_name, message, score, access, channel_link, message_link, source, user_dm_link}: any) => {
+                    {item.context.map(({time, user_id, user_name, user_avatar, channel_name, message, score, access, channel_link, message_link, source, user_dm_link}: any) => {
                         return (
                             <div
                                 className='ss-response-context'
@@ -62,7 +102,11 @@ function Result({item} : any) {
                                 <div className='ss-rc-top'>
                                     <div className='ss-rc-user'>
                                         <div className='ss-rc-user-avatar'>
-                                            {` ${user_name.slice(0, 1)} `}
+                                            {source === 'mm' ? <img
+                                                src={user_avatar}
+                                                alt='avatar'
+                                                className='ss-rc-user-avatar_img'
+                                                               /> : user_name.slice(0, 1)}
                                         </div>
                                         <div className='ss-rc-user-text'>
                                             <a

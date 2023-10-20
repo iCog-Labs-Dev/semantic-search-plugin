@@ -97,6 +97,11 @@
     font-weight: bold;
 }
 
+.ss-rc-user-avatar_img {
+    border-radius: inherit;
+    object-fit: cover;
+}
+
 .ss-rc-user-text {
     display: flex;
     flex-direction: column;
