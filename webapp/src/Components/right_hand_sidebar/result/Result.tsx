@@ -67,12 +67,14 @@ function Result({item} : any) {
                                         <div className='ss-rc-user-text'>
                                             <a
                                                 className='ss-rc-user-name'
-                                                href={source === 'mm' ? user_dm_link : ''}
+                                                style={{cursor: source === 'mm' ? 'pointer' : 'default'}}
+                                                href={source === 'mm' ? user_dm_link : null}
                                                 target='_blank'
                                                 rel='noreferrer'
                                             > {user_name} </a>
                                             <a
-                                                href={source === 'mm' ? channel_link : ''}
+                                                style={{cursor: source === 'mm' ? 'pointer' : 'default'}}
+                                                href={source === 'mm' ? channel_link : null}
                                                 target='_blank'
                                                 rel='noreferrer'
                                             > {`#${channel_name}`} </a>
@@ -97,7 +99,8 @@ function Result({item} : any) {
                                         </div>
                                     </div>
                                 </div>
-                                <div className='ss-rc-middle'>{message}</div>
+                                {/* <div className='ss-rc-middle'>{message}</div> */}
+                                <ReactMarkdown className='ss-rc-middle'>{ message }</ReactMarkdown>
                                 <div className='ss-rc-bottom'>
                                     <div className='ss-rc-relevance'>
                                         <svg

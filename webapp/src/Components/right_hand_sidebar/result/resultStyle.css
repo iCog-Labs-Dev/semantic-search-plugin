@@ -103,7 +103,7 @@
     justify-content: flex-end;
 }
 
-.ss-rc-user-text a {
+.ss-rc-user-text a, .ss-rc-user-text a:hover {
     text-decoration: none;
     color: var(--center-channel-color);
 }
@@ -135,8 +135,11 @@
 
 .ss-rc-middle {
     padding-left:6rem;
-    font-size:1.4rem;
     overflow-wrap: break-word;
+}
+
+.ss-rc-middle p {
+    font-size: 13.5px;
 }
 
 .ss-rc-bottom {
