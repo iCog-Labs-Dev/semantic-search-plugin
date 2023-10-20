@@ -1,11 +1,11 @@
 import React, { Fragment, useEffect, useState } from 'react'
 
-import './resetSyncSettingStyle.css'
+import './resetDataSettingStyle.css'
 
-function ResetSyncSetting(props: { helpText: { props: { text: string } } }) {
+function ResetDataSetting(props: { helpText: { props: { text: string } } }) {
     // eslint-disable-next-line no-process-env
     const apiURL = process.env.MM_PLUGIN_API_URL;
-    const successMessage = 'Sync reset successfully';
+    const successMessage = 'Data reset successfully';
 
     const [loading, setLoading] = useState(false);
     const [wasSuccessful, setWasSuccessful] = useState(false);
@@ -48,7 +48,7 @@ function ResetSyncSetting(props: { helpText: { props: { text: string } } }) {
         }
     }, [wasSuccessful]);
 
-    const handleResetSync = async (e) => {
+    const handleResetData = async (e) => {
         e.preventDefault();
 
         if (!mattermostChecked && !slackChecked) {
@@ -119,7 +119,7 @@ function ResetSyncSetting(props: { helpText: { props: { text: string } } }) {
                     type='button'
                     className='btn btn-primary'
                     disabled={loading || (!mattermostChecked && !slackChecked)}
-                    onClick={handleResetSync}
+                    onClick={handleResetData}
                 >
                     <i className='fa fa-refresh'/>
                     {'Reset'}
@@ -144,4 +144,4 @@ function ResetSyncSetting(props: { helpText: { props: { text: string } } }) {
     );
 }
 
-export default ResetSyncSetting;
+export default ResetDataSetting;

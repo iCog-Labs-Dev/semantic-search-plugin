@@ -7,7 +7,7 @@ import { GlobalState } from '@mattermost/types/lib/store'
 import { manifest } from '@/manifest'
 
 import IsEngineOnlineSetting from './Components/admin_settings/is_engine_online_setting/IsEngineOnlineSetting'
-import ResetSyncSetting from './Components/admin_settings/reset_sync_setting/ResetSyncSetting'
+import ResetDataSetting from './Components/admin_settings/reset_data_setting/ResetDataSetting'
 import SyncIntervalSetting from './Components/admin_settings/sync_interval_setting/SyncIntervalSetting'
 import TimeLeftUntilNextSyncSetting from './Components/admin_settings/time_left_until_next_sync_setting/TimeLeftUntilNextSyncSetting'
 import ToggleSyncSetting from './Components/admin_settings/toggle_sync_setting/ToggleSyncSetting'
@@ -36,7 +36,7 @@ export default class Plugin {
 
         registry.registerAdminConsoleCustomSetting('toggleSync', ToggleSyncSetting, {showTitle: true});
 
-        registry.registerAdminConsoleCustomSetting('resetSync', ResetSyncSetting, {showTitle: true});
+        registry.registerAdminConsoleCustomSetting('resetData', ResetDataSetting, {showTitle: true});
 
         registry.registerAdminConsoleCustomSetting('timeLeftUntilNextSync', TimeLeftUntilNextSyncSetting, {showTitle: true});
 

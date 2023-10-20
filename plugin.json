@@ -36,10 +36,10 @@
                 "default": false
             },
             {
-                "key": "resetSync",
-                "display_name": "Reset Sync:",
+                "key": "resetData",
+                "display_name": "Reset Data:",
                 "type": "custom",
-                "help_text": "Reset the semantic search sync. This will reset the vector database based on the selected field(s).",
+                "help_text": "Reset the semantic search data. This will reset the vector database based on the selected field(s).",
                 "placeholder": "",
                 "default": null
             },
