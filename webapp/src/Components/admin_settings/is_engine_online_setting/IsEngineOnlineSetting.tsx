@@ -13,7 +13,7 @@ function IsEngineOnlineSetting() {
         const interval = setInterval(async () => {
             let response;
             try {
-                response = await fetch(`${apiURL}/img`, {
+                response = await fetch(`${apiURL}/ping`, {
                     method: 'HEAD',
                 });
             } catch (err) {
