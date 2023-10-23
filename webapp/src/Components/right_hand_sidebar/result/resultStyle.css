@@ -32,6 +32,7 @@
 .ss-response-container_text {
     width: inherit;
     overflow-wrap: break-word;
+    text-align: justify;
 }
 
 .ss-response-context-wrapper {
