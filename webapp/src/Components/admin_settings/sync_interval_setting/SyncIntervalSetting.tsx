@@ -30,7 +30,7 @@ function SyncIntervalSetting(props: { helpText: { props: { text: string } } }) {
         let response;
 
         try {
-            const api = `${apiURL}/`;
+            const api = `${apiURL}/root/get`;
 
             response = await fetch(api!, fetchOptions);
         } catch (err: any) {
@@ -47,12 +47,12 @@ function SyncIntervalSetting(props: { helpText: { props: { text: string } } }) {
             const jsonRes = await response.json();
 
             const fetchedInterval = {
-                hour: Math.floor(jsonRes.fetch_interval / (60 * 60)),
-                minute: Math.floor((jsonRes.fetch_interval % (60 * 60)) / (60)),
+                hour: Math.floor(jsonRes.sync_interval / (60 * 60)),
+                minute: Math.floor((jsonRes.sync_interval % (60 * 60)) / (60)),
             };
 
             // eslint-disable-next-line no-console
-            // console.log('jsonRes.fetch_interval', fetchedInterval);
+            // console.log('jsonRes.sync_interval', fetchedInterval);
 
             setSyncInterval(fetchedInterval);
         } else {
@@ -142,7 +142,7 @@ function SyncIntervalSetting(props: { helpText: { props: { text: string } } }) {
         const interval = ((syncInterval.hour * 60) + syncInterval.minute) * 60;
 
         const reqObj = {
-            fetch_interval: interval,
+            sync_interval: interval,
         };
 
         const postOptions = {
@@ -162,7 +162,7 @@ function SyncIntervalSetting(props: { helpText: { props: { text: string } } }) {
         let response;
 
         try {
-            const api = `${apiURL}/set_fetch_interval`;
+            const api = `${apiURL}/settings/sync_interval`;
 
             response = await fetch(api!, postOptions);
         } catch (err: any) {
