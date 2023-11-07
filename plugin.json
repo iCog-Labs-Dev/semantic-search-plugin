@@ -36,6 +36,14 @@
                 "default": 15
             },
             {
+                "key": "personalAccessToken",
+                "display_name": "Personal Access Token:",
+                "type": "custom",
+                "help_text": "The Personal Access Token of the admin user",
+                "placeholder": "",
+                "default": null
+            },
+            {
                 "key": "timeLeftUntilNextSync",
                 "display_name": "Time Left Until Next Sync:",
                 "type": "custom",

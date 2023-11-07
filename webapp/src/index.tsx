@@ -9,6 +9,7 @@ import { manifest } from '@/manifest'
 import IsEngineOnlineSetting from './Components/admin_settings/is_engine_online_setting/IsEngineOnlineSetting'
 import ResetDataSetting from './Components/admin_settings/reset_data_setting/ResetDataSetting'
 import SyncIntervalSetting from './Components/admin_settings/sync_interval_setting/SyncIntervalSetting'
+import PersonalAccessTokenSetting from './Components/admin_settings/pat_setting/PatSetting'
 import TimeLeftUntilNextSyncSetting from './Components/admin_settings/time_left_until_next_sync_setting/TimeLeftUntilNextSyncSetting'
 import ToggleSyncSetting from './Components/admin_settings/toggle_sync_setting/ToggleSyncSetting'
 import UploadSlackExportFileSetting from './Components/admin_settings/upload_slack_export_file_setting/UploadSlackExportFileSetting'
@@ -33,6 +34,8 @@ export default class Plugin {
         registry.registerAdminConsoleCustomSetting('isEngineOnline', IsEngineOnlineSetting);
 
         registry.registerAdminConsoleCustomSetting('syncInterval', SyncIntervalSetting, {showTitle: true});
+
+        registry.registerAdminConsoleCustomSetting('personalAccessToken', PersonalAccessTokenSetting, {showTitle: true});
 
         registry.registerAdminConsoleCustomSetting('toggleSync', ToggleSyncSetting, {showTitle: true});
 
