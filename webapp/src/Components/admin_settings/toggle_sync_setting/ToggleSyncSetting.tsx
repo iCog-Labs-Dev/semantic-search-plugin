@@ -35,7 +35,7 @@ function ToggleSyncSetting(props: { helpText: { props: { text: string } } }) {
             let response;
 
             try {
-                const api = `${apiURL}/`;
+                const api = `${apiURL}/root/get`;
 
                 response = await fetch(api!, fetchOptions);
             } catch (err: any) {
@@ -52,7 +52,7 @@ function ToggleSyncSetting(props: { helpText: { props: { text: string } } }) {
                 const jsonRes = await response.json();
 
                 setIsSyncing(jsonRes.is_syncing);
-                setLastFetchTime(jsonRes.last_fetch_time); // used to check if the sync is running for the first time
+                setLastFetchTime(jsonRes.last_sync_time); // used to check if the sync is running for the first time
             } else {
                 const jsonErr = await response?.json();
 
@@ -113,9 +113,20 @@ function ToggleSyncSetting(props: { helpText: { props: { text: string } } }) {
         let response;
 
         try {
-            const api = `${apiURL}/start_sync`;
+            const api = `${apiURL}/sync/start`;
 
             response = await fetch(api!, postOptions);
+        
+            const eventSource = new EventSource(`${apiURL}/sync/sync_percentage`, { withCredentials: true });
+        
+            eventSource.onmessage = (event) => {
+                console.log('Sync progress... ', event.data )
+            };
+            eventSource.onerror = (error) => {
+                console.error('Sync SSE Error:', error);
+                eventSource.close();
+            };
+
         } catch (err: any) {
             // eslint-disable-next-line no-console
             console.warn('Error', err);
@@ -152,7 +163,7 @@ function ToggleSyncSetting(props: { helpText: { props: { text: string } } }) {
         let response;
 
         try {
-            const api = `${apiURL}/stop_sync`;
+            const api = `${apiURL}/sync/stop`;
 
             response = await fetch(api!, fetchOptions);
         } catch (err: any) {
