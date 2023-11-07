@@ -56,7 +56,7 @@ function RHS({
 
         setLoading(true);
 
-        fetch(`${apiURL}/search`, {
+        fetch(`${apiURL}/search/something`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

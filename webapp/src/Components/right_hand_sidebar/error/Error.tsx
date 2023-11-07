@@ -11,7 +11,7 @@ function Error({error} : any) {
         const fetchData = async () => {
             let response;
             try {
-                response = await fetch(`${apiURL}/ping`, {
+                response = await fetch(`${apiURL}/root/ping`, {
                     method: 'HEAD',
                 });
             } catch (err) {

@@ -74,7 +74,7 @@ function ResetDataSetting(props: { helpText: { props: { text: string } } }) {
         let response;
 
         try {
-            const api = `${apiURL}/reset`;
+            const api = `${apiURL}/settings/reset`;
 
             response = await fetch(api!, postOptions);
         } catch (err: any) {
