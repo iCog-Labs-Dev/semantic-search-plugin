@@ -37,7 +37,7 @@ function TimeLeftUntilNextSyncSetting(props: { helpText: { props: { text: string
         let response;
 
         try {
-            const api = `${apiURL}/`;
+            const api = `${apiURL}/root/get`;
 
             response = await fetch(api!, fetchOptions);
         } catch (err: any) {
@@ -53,8 +53,8 @@ function TimeLeftUntilNextSyncSetting(props: { helpText: { props: { text: string
         if (response?.ok) {
             const jsonRes = await response.json();
 
-            setLastFetchTime(jsonRes.last_fetch_time);
-            setFetchInterval(jsonRes.fetch_interval * 1000);
+            setLastFetchTime(jsonRes.last_sync_time);
+            setFetchInterval(jsonRes.sync_interval * 1000);
             setIsSyncing(jsonRes.is_syncing);
         } else {
             const jsonErr = await response?.json();
