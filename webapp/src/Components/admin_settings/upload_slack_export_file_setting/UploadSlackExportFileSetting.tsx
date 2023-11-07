@@ -67,7 +67,7 @@ function UploadSlackExportFileSetting(props: { helpText: { props: { text: string
         let response;
 
         try {
-            const api = `${apiURL}/upload_slack_zip`;
+            const api = `${apiURL}/slack/upload_zip`;
 
             response = await fetch(api!, fetchOptions);
         } catch (err: any) {
@@ -328,9 +328,9 @@ function UploadSlackExportFileSetting(props: { helpText: { props: { text: string
         let response;
 
         try {
-            const api = `${apiURL}/store_slack_data`;
+            const api = `${apiURL}/slack/store_data`;
 
-            response = await fetch(api!, postOptions);
+            response = await fetch(api!, postOptions)
         } catch (err: any) {
             // eslint-disable-next-line no-console
             console.warn('Error', err);
@@ -342,6 +342,19 @@ function UploadSlackExportFileSetting(props: { helpText: { props: { text: string
         }
 
         if (response?.ok) {
+
+            const api = `${apiURL}/slack/store_data_stream`;
+            const eventSource = new EventSource(api, { withCredentials: true });
+
+            eventSource.onmessage = (event) => {
+                console.log( 'Storing slack data... ' , event.data )
+            };
+
+            eventSource.onerror = (error) => {
+                console.error('Storing slack SSE error:', error);
+                eventSource.close();
+            };
+
             setUnfilteredChannels([]);
             setIsUploaded(true);
         } else {
