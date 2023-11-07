@@ -3,7 +3,7 @@ import React, { Fragment, useEffect, useState } from 'react'
 import './isEngineOnlineSettingStyle.css'
 
 function IsEngineOnlineSetting() {
-    const RETRYTIMEINSECONDS = 10000;
+    const RETRYTIMEINSECONDS = 60 * 1000;   
     // eslint-disable-next-line no-process-env
     const apiURL = process.env.MM_PLUGIN_API_URL;
     const [isOnline, setIsOnline] = useState<boolean>(true);
@@ -13,7 +13,7 @@ function IsEngineOnlineSetting() {
         const interval = setInterval(async () => {
             let response;
             try {
-                response = await fetch(`${apiURL}/ping`, {
+                response = await fetch(`${apiURL}/root/ping`, {
                     method: 'HEAD',
                 });
             } catch (err) {
