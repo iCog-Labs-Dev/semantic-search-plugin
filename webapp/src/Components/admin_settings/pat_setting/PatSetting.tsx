@@ -6,7 +6,7 @@ function PersonalAccessTokenSetting(props: { helpText: { props: { text: string }
     // eslint-disable-next-line no-process-env
     const apiURL = process.env.MM_PLUGIN_API_URL;
 
-    const [pat, setPat] = useState('')
+    const [pat, setPat] = useState('');
     const [wasPatSuccessful, setWasPatSuccessful] = useState(false);
     const [hasPatError, setHasPatError] = useState(false);
 
@@ -20,15 +20,17 @@ function PersonalAccessTokenSetting(props: { helpText: { props: { text: string }
         };
         try {
             const api = `${apiURL}/settings/get_pat`;
-            fetch(api!, fetchOptions).then((res) => {
-                const jsonRes = res.json().then((resp) => {
-                    setPat(resp.personal_access_token)
+            fetch(api!, fetchOptions).
+                then((res) => {
+                    const jsonRes = res.json().
+                        then((resp) => {
+                            setPat(resp.personal_access_token);
+                        });
                 });
-            })
         } catch (err: any) {
             console.warn('Error', err);
         }
-    }, [])
+    }, []);
 
     useEffect(() => {
         if (wasPatSuccessful) {
@@ -88,23 +90,23 @@ function PersonalAccessTokenSetting(props: { helpText: { props: { text: string }
                         onChange={(e) => setPat(e.target.value)}
                     />
                 </div>
-                <p
-                className='ss-sync-interval-success-message'
-                style={{display: wasPatSuccessful ? 'block' : 'none'}}
-                >
-                    {'Personal access token set successfully!'}
-                </p>
-                <p
-                    className='ss-sync-interval-error-message'
-                    style={{display: hasPatError ? 'block' : 'none'}}
-                >
-                    {'Error setting personal access token!'}
-                </p>
                 <button
                     onClick={handlePatSubmit}
                     className='btn btn-primary'
                 > {'Save'} </button>
             </div>
+            <p
+                className='ss-sync-interval-success-message'
+                style={{display: wasPatSuccessful ? 'block' : 'none'}}
+            >
+                {'Personal access token set successfully!'}
+            </p>
+            <p
+                className='ss-sync-interval-error-message'
+                style={{display: hasPatError ? 'block' : 'none'}}
+            >
+                {'Error setting personal access token!'}
+            </p>
         </Fragment>
     );
 }

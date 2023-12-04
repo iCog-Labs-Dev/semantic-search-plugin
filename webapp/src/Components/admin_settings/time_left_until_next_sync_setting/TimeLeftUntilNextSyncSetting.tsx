@@ -55,7 +55,8 @@ function TimeLeftUntilNextSyncSetting(props: { helpText: { props: { text: string
 
             setLastFetchTime(jsonRes.last_sync_time);
             setFetchInterval(jsonRes.sync_interval * 1000);
-            setIsSyncing(jsonRes.is_syncing);
+
+            // setIsSyncing(jsonRes.is_syncing);
         } else {
             const jsonErr = await response?.json();
 
@@ -70,6 +71,21 @@ function TimeLeftUntilNextSyncSetting(props: { helpText: { props: { text: string
         };
 
         firstRun();
+
+        const eventSource = new EventSource(`${apiURL}/sync/is_started`, {withCredentials: true});
+
+        eventSource.onmessage = (event) => {
+            const isSyncingTemp = event.data === 'True'; // convert to bool
+
+            // console.log('Counter started ', isSyncingTemp);
+
+            setIsSyncing(isSyncingTemp);
+        };
+        eventSource.onerror = (error) => {
+            console.error('Sync SSE Error:', error);
+
+            eventSource.close();
+        };
     }, []);
 
     useEffect(() => {
