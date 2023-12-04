@@ -19,6 +19,8 @@ function ToggleSyncSetting(props: { helpText: { props: { text: string } } }) {
     const [errorMessage, setErrorMessage] = useState('');
     const [isSyncing, setIsSyncing] = useState<boolean>();
     const [lastFetchTime, setLastFetchTime] = useState<number>();
+    const [isInProgress, setIsInProgress] = useState(false);
+    const [progressPercentage, setProgressPercentage] = useState(0);
 
     useEffect(() => {
         const fetchSettings = async () => {
@@ -53,6 +55,7 @@ function ToggleSyncSetting(props: { helpText: { props: { text: string } } }) {
 
                 setIsSyncing(jsonRes.is_syncing);
                 setLastFetchTime(jsonRes.last_sync_time); // used to check if the sync is running for the first time
+                setIsInProgress(jsonRes.in_progress);
             } else {
                 const jsonErr = await response?.json();
 
@@ -95,6 +98,11 @@ function ToggleSyncSetting(props: { helpText: { props: { text: string } } }) {
         }
     }, [wasSuccessful]);
 
+    useEffect(() => {
+        console.log('isInProgress: ', isInProgress);
+        console.log('isSycing: ', isSyncing);
+    }, [isInProgress, isSyncing]);
+
     const startSync = async () => {
         // const postObj = {
         //     mm_api_url: store.getState().entities.general.config.SiteURL + '/api/v4',
@@ -116,17 +124,6 @@ function ToggleSyncSetting(props: { helpText: { props: { text: string } } }) {
             const api = `${apiURL}/sync/start`;
 
             response = await fetch(api!, postOptions);
-        
-            const eventSource = new EventSource(`${apiURL}/sync/sync_percentage`, { withCredentials: true });
-        
-            eventSource.onmessage = (event) => {
-                console.log('Sync progress... ', event.data )
-            };
-            eventSource.onerror = (error) => {
-                console.error('Sync SSE Error:', error);
-                eventSource.close();
-            };
-
         } catch (err: any) {
             // eslint-disable-next-line no-console
             console.warn('Error', err);
@@ -136,9 +133,29 @@ function ToggleSyncSetting(props: { helpText: { props: { text: string } } }) {
         }
 
         if (response?.ok) {
-            const jsonRes = await response.json();
+            const eventSource = new EventSource(`${apiURL}/sync/sync_percentage`, {withCredentials: true});
 
-            setWasSuccessful(true);
+            eventSource.onmessage = (event) => {
+                console.log('Sync progress... ', event.data);
+
+                setIsInProgress(true);
+                setProgressPercentage(event.data);
+
+                if (event.data > 1) {
+                    setIsInProgress(false);
+                    setWasSuccessful(true);
+                    setIsSyncing(true);
+                }
+            };
+            eventSource.onerror = (error) => {
+                console.error('Sync SSE Error:', error);
+
+                eventSource.close();
+            };
+
+            // --------------------
+
+            const jsonRes = await response.json();
 
             return jsonRes.is_syncing;
         }
@@ -211,7 +228,12 @@ function ToggleSyncSetting(props: { helpText: { props: { text: string } } }) {
 
     return (
         <Fragment>
-            <div className='ss-setting-toggle-sync'>
+            {isInProgress ? <progress
+                className='ss-setting-sync-progress'
+                value={progressPercentage}
+                            >
+                { progressPercentage + '%' }
+            </progress> : <div className='ss-setting-toggle-sync'>
                 <label className='switch'>
                     <input
                         type='checkbox'
@@ -221,7 +243,7 @@ function ToggleSyncSetting(props: { helpText: { props: { text: string } } }) {
                     />
                     <span className='slider round'/>
                 </label>
-            </div>
+            </div>}
             <p
                 className='ss-toggle-sync-success-message'
                 style={{display: wasSuccessful ? 'block' : 'none'}}

@@ -1,3 +1,8 @@
+.ss-setting-sync-progress {
+  height: 25px;
+  width: 200px;
+}
+
 .switch {
   position: relative;
   display: inline-block;
