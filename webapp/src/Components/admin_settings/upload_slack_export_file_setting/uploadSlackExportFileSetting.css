@@ -159,6 +159,10 @@
   border: 1px solid rgba(var(--center-channel-color-rgb), 0.16);
 }
 
+.upload-slack-export-progress {
+  height: 17px;
+}
+
 .upload-slack-export-feedback {
   margin-top: -1rem;
   font-size: 13px;

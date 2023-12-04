@@ -13,6 +13,7 @@ function UploadSlackExportFileSetting(props: { helpText: { props: { text: string
         checked?: boolean;
         startDate?: string;
         endDate?: string;
+        progress?: number;
     };
 
     // eslint-disable-next-line no-process-env
@@ -23,6 +24,7 @@ function UploadSlackExportFileSetting(props: { helpText: { props: { text: string
     const [allChecked, setAllChecked] = useState(false);
     const [unfilteredChannels, setUnfilteredChannels] = useState<Channel[]>([]);
     const [isUploaded, setIsUploaded] = useState(false);
+    const [showProgress, setShowProgress] = useState(false);
 
     const noneChecked = unfilteredChannels.every((channel) => !channel.checked);
 
@@ -97,6 +99,10 @@ function UploadSlackExportFileSetting(props: { helpText: { props: { text: string
 
                 if (!Object.prototype.hasOwnProperty.call(channel, 'endDate')) {
                     channel.endDate = '';
+                }
+
+                if (!Object.prototype.hasOwnProperty.call(channel, 'progress')) {
+                    channel.progress = null;
                 }
 
                 return channel;
@@ -330,7 +336,7 @@ function UploadSlackExportFileSetting(props: { helpText: { props: { text: string
         try {
             const api = `${apiURL}/slack/store_data`;
 
-            response = await fetch(api!, postOptions)
+            response = await fetch(api!, postOptions);
         } catch (err: any) {
             // eslint-disable-next-line no-console
             console.warn('Error', err);
@@ -342,21 +348,37 @@ function UploadSlackExportFileSetting(props: { helpText: { props: { text: string
         }
 
         if (response?.ok) {
-
+            setShowProgress(true);
             const api = `${apiURL}/slack/store_data_stream`;
-            const eventSource = new EventSource(api, { withCredentials: true });
+            const eventSource = new EventSource(api, {withCredentials: true});
 
             eventSource.onmessage = (event) => {
-                console.log( 'Storing slack data... ' , event.data )
+                console.log('Storing slack data... ', event.data);
+
+                const currentProgress = parseFloat(event.data.split('"')[2].slice(2, -1));
+
+                const currentChannel = unfilteredChannels.filter((channel) => {
+                    return channel.id === event.data.split('"')[1];
+                });
+
+                currentChannel[0].progress = currentProgress;
+
+                const otherChannels = unfilteredChannels.filter((channel) => {
+                    return channel.id !== event.data.split('"')[1];
+                });
+
+                setUnfilteredChannels([...currentChannel, ...otherChannels]);
             };
 
             eventSource.onerror = (error) => {
                 console.error('Storing slack SSE error:', error);
+
+                setUnfilteredChannels([]);
+                setIsUploaded(true);
+                setShowProgress(false);
+
                 eventSource.close();
             };
-
-            setUnfilteredChannels([]);
-            setIsUploaded(true);
         } else {
             const jsonErr = await response?.json();
 
@@ -466,6 +488,16 @@ function UploadSlackExportFileSetting(props: { helpText: { props: { text: string
                                                 onChange={(e) => handleEndDateChange(e, channel.id)}
                                             />
                                         </td>
+                                        { showProgress && (
+                                            <td>
+                                                {channel.checked && <progress
+                                                    className='upload-slack-export-progress'
+                                                    value={channel.progress}
+                                                >
+                                                    { channel.progress + '%' }
+                                                </progress>}
+                                            </td>)
+                                        }
                                     </tr>
                                 ))}
                             </tbody>
