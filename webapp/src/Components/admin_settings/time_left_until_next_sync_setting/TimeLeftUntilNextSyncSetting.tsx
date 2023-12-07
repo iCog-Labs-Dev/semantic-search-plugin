@@ -25,8 +25,11 @@ function TimeLeftUntilNextSyncSetting(props: { helpText: { props: { text: string
     const [isSyncing, setIsSyncing] = useState<boolean>();
     const [countDown, setCountDown] = useState(0);
     const [reRunEvent, setReRunEvent] = useState(false);
+    const [reRunEventForProgress, setReRunEventForProgress] = useState(false);
+    const [isInProgress, setIsInProgress] = useState();
 
     const eventSource = useRef<EventSource>();
+    const eventSourceProgress = useRef<EventSource>();
 
     const syncWithServer = useCallback(async () => {
         const fetchOptions = {
@@ -110,6 +113,39 @@ function TimeLeftUntilNextSyncSetting(props: { helpText: { props: { text: string
     }, [reRunEvent, eventSource]);
 
     useEffect(() => {
+        if (eventSourceProgress.current) {
+            eventSourceProgress.current.close();
+        }
+
+        let interval:NodeJS.Timer;
+
+        eventSourceProgress.current = new EventSource(`${apiURL}/sync/is_inprogress`, {withCredentials: true});
+
+        eventSourceProgress.current.onmessage = (event) => {
+            const isInProgressTemp = event.data === 'True'; // convert to bool
+
+            console.log('Inprogress: ', isInProgressTemp);
+
+            setIsInProgress((previousValue) => {
+                return previousValue === isInProgressTemp ? previousValue : isInProgressTemp;
+            });
+        };
+        eventSourceProgress.current.onerror = (error) => {
+            // console.error('Sync SSE Error:', error);
+
+            eventSourceProgress.current?.close();
+
+            interval = setInterval(async () => {
+                setReRunEventForProgress((previousValue) => {
+                    return !previousValue;
+                });
+            }, RETRYTIMEINSECONDS);
+        };
+
+        return () => clearInterval(interval);
+    }, [reRunEventForProgress, eventSourceProgress]);
+
+    useEffect(() => {
         console.log('LastFetchTime: ', lastFetchTime);
         const remainingTime = (lastFetchTime + fetchInterval) - new Date().getTime();
 
@@ -180,41 +216,40 @@ function TimeLeftUntilNextSyncSetting(props: { helpText: { props: { text: string
                 ) : (
                     <Fragment>
                         {isSyncing ? (
-                            lastFetchTime === 0 ? (
-                                <p>{'Sync has not finished performing yet.'}</p>
-                            ) : (
-                                <div className='ss-time-left-counter'>
-                                    <div className='ss-time-left-counter__item'>
-                                        <span className='ss-time-left-counter__item__number'>
-                                            { timeLeft.hours }
-                                        </span>
-                                        <span className='ss-time-left-counter__item__label'>
-                                            { 'Hours' }
-                                        </span>
-                                    </div>
-                                    <span className='ss-time-left-counter__divider'>{ ':' }</span>
-                                    <div className='ss-time-left-counter__item'>
-                                        <span className='ss-time-left-counter__item__number'>
-                                            { timeLeft.minutes }
-                                        </span>
-                                        <span className='ss-time-left-counter__item__label'>
-                                            { 'Minutes' }
-                                        </span>
-                                    </div>
-                                    <span className='ss-time-left-counter__divider'>{ ':' }</span>
-                                    <div className='ss-time-left-counter__item'>
-                                        <span className='ss-time-left-counter__item__number'>
-                                            { timeLeft.seconds }
-                                        </span>
-                                        <span className='ss-time-left-counter__item__label'>
-                                            { 'Seconds' }
-                                        </span>
-                                    </div>
+                            <div className='ss-time-left-counter'>
+                                <div className='ss-time-left-counter__item'>
+                                    <span className='ss-time-left-counter__item__number'>
+                                        { timeLeft.hours }
+                                    </span>
+                                    <span className='ss-time-left-counter__item__label'>
+                                        { 'Hours' }
+                                    </span>
                                 </div>
-                            )
+                                <span className='ss-time-left-counter__divider'>{ ':' }</span>
+                                <div className='ss-time-left-counter__item'>
+                                    <span className='ss-time-left-counter__item__number'>
+                                        { timeLeft.minutes }
+                                    </span>
+                                    <span className='ss-time-left-counter__item__label'>
+                                        { 'Minutes' }
+                                    </span>
+                                </div>
+                                <span className='ss-time-left-counter__divider'>{ ':' }</span>
+                                <div className='ss-time-left-counter__item'>
+                                    <span className='ss-time-left-counter__item__number'>
+                                        { timeLeft.seconds }
+                                    </span>
+                                    <span className='ss-time-left-counter__item__label'>
+                                        { 'Seconds' }
+                                    </span>
+                                </div>
+                            </div>
+
+                        ) : (isInProgress ? (
+                            <p>{'Syncing in progress ...'}</p>
                         ) : (
-                            <p> {'Not Syncing ...'} </p>
-                        )}
+                            <p> {'Sync Stopped'} </p>
+                        ))}
                     </Fragment>
                 )}
             </Fragment>
