@@ -64,7 +64,11 @@ function SyncIntervalSetting(props: { helpText: { props: { text: string } } }) {
     }, [apiURL]);
 
     useEffect(() => {
-        syncWithServer();
+        const firstRun = async () => {
+            await syncWithServer();
+        };
+
+        firstRun();
     }, []);
 
     useEffect(() => {
