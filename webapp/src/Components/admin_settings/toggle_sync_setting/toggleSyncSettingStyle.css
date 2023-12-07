@@ -1,6 +1,21 @@
-.ss-setting-sync-progress {
-  height: 25px;
+.ss-setting-sync-progress-wrapper {
+  position: relative;
   width: 200px;
+}
+
+.ss-setting-sync-progress {
+  height: 30px;
+  width: 100%;
+}
+
+.ss-setting-sync-progress-percentage {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  font-size: smaller;
+  transform: translate(-50%, -50%);
+  color: dimgray;
+  padding-bottom:3px
 }
 
 .switch {

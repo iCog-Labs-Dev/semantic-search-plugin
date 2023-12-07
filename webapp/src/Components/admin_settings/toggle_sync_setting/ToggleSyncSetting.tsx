@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useState } from 'react'
+import React, { Fragment, useEffect, useRef, useState } from 'react'
 
 import './toggleSyncSettingStyle.css'
 
@@ -12,15 +12,18 @@ function ToggleSyncSetting(props: { helpText: { props: { text: string } } }) {
     // eslint-disable-next-line no-process-env
     const apiURL = process.env.MM_PLUGIN_API_URL;
     const successMessage = 'Sync status changed successfully';
+    const RETRYTIMEINSECONDS = 10 * 1000;
 
     const [loading, setLoading] = useState(false);
     const [wasSuccessful, setWasSuccessful] = useState(false);
     const [hasError, setHasError] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
-    const [isSyncing, setIsSyncing] = useState<boolean>();
-    const [lastFetchTime, setLastFetchTime] = useState<number>();
+    const [isSyncing, setIsSyncing] = useState<boolean>(false);
     const [isInProgress, setIsInProgress] = useState(false);
     const [progressPercentage, setProgressPercentage] = useState(0);
+    const [reRunEvent, setReRunEvent] = useState(false);
+
+    const eventSource = useRef<EventSource>();
 
     useEffect(() => {
         const fetchSettings = async () => {
@@ -52,22 +55,53 @@ function ToggleSyncSetting(props: { helpText: { props: { text: string } } }) {
 
             if (response?.ok) {
                 const jsonRes = await response.json();
-
-                setIsSyncing(jsonRes.is_syncing);
-                setLastFetchTime(jsonRes.last_sync_time); // used to check if the sync is running for the first time
                 setIsInProgress(jsonRes.in_progress);
             } else {
                 const jsonErr = await response?.json();
 
                 setHasError(true);
                 setErrorMessage(jsonErr.message);
-
-                setIsSyncing(false);
             }
         };
 
         fetchSettings();
     }, []);
+
+    useEffect(() => {
+        // console.log('reRun: ', reRunEvent);
+        if (eventSource.current) {
+            eventSource.current.close();
+        }
+
+        let interval:NodeJS.Timer;
+
+        eventSource.current = new EventSource(`${apiURL}/sync/is_started`, {withCredentials: true});
+
+        eventSource.current.onmessage = (event) => {
+            const isSyncingTemp = event.data === 'True'; // convert to bool
+
+            // console.log('Syncing: ', isSyncingTemp);
+
+            setIsSyncing((previousValue) => {
+                return previousValue === isSyncingTemp ? previousValue : isSyncingTemp;
+            });
+        };
+        eventSource.current.onerror = (error) => {
+            // console.error('Sync SSE Error:', error);
+
+            eventSource.current?.close();
+
+            interval = setInterval(async () => {
+                setReRunEvent((previousValue) => {
+                    return !previousValue;
+                });
+            }, RETRYTIMEINSECONDS);
+        };
+
+        return () => {
+            clearInterval(interval);
+        };
+    }, [reRunEvent, eventSource]);
 
     useEffect(() => {
         if (loading) {
@@ -99,9 +133,8 @@ function ToggleSyncSetting(props: { helpText: { props: { text: string } } }) {
     }, [wasSuccessful]);
 
     useEffect(() => {
-        console.log('isInProgress: ', isInProgress);
-        console.log('isSycing: ', isSyncing);
-    }, [isInProgress, isSyncing]);
+        setWasSuccessful(true);
+    }, [isSyncing]);
 
     const startSync = async () => {
         // const postObj = {
@@ -133,24 +166,22 @@ function ToggleSyncSetting(props: { helpText: { props: { text: string } } }) {
         }
 
         if (response?.ok) {
-            const eventSource = new EventSource(`${apiURL}/sync/sync_percentage`, {withCredentials: true});
+            const eventSourcePercentage = new EventSource(`${apiURL}/sync/sync_percentage`, {withCredentials: true});
 
-            eventSource.onmessage = (event) => {
+            eventSourcePercentage.onmessage = (event) => {
                 console.log('Sync progress... ', event.data);
 
                 setIsInProgress(true);
                 setProgressPercentage(event.data);
 
-                if (event.data > 1) {
+                if (event.data >= 1) {
                     setIsInProgress(false);
-                    setWasSuccessful(true);
-                    setIsSyncing(true);
                 }
             };
-            eventSource.onerror = (error) => {
+            eventSourcePercentage.onerror = (error) => {
                 console.error('Sync SSE Error:', error);
 
-                eventSource.close();
+                eventSourcePercentage.close();
             };
 
             // --------------------
@@ -194,8 +225,6 @@ function ToggleSyncSetting(props: { helpText: { props: { text: string } } }) {
         if (response?.ok) {
             const jsonRes = await response.json();
 
-            setWasSuccessful(true);
-
             return jsonRes.is_syncing;
         }
 
@@ -212,11 +241,9 @@ function ToggleSyncSetting(props: { helpText: { props: { text: string } } }) {
 
         try {
             if (checked) {
-                const syncStartRes = await startSync();
-                setIsSyncing(syncStartRes);
+                await startSync();
             } else {
-                const syncStoptRes = await stopSync();
-                setIsSyncing(syncStoptRes);
+                await stopSync();
             }
         } catch (err: any) {
             // eslint-disable-next-line no-console
@@ -228,12 +255,13 @@ function ToggleSyncSetting(props: { helpText: { props: { text: string } } }) {
 
     return (
         <Fragment>
-            {isInProgress ? <progress
-                className='ss-setting-sync-progress'
-                value={progressPercentage}
-                            >
-                { progressPercentage + '%' }
-            </progress> : <div className='ss-setting-toggle-sync'>
+            {isInProgress ? <div className='ss-setting-sync-progress-wrapper'>
+                <progress
+                    className='ss-setting-sync-progress'
+                    value={progressPercentage}
+                />
+                <span className='ss-setting-sync-progress-percentage'>{ ((progressPercentage * 100).toFixed(1)) + '%' }</span>
+            </div> : <div className='ss-setting-toggle-sync'>
                 <label className='switch'>
                     <input
                         type='checkbox'
