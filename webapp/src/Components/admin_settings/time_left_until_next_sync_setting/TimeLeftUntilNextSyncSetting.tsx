@@ -1,11 +1,13 @@
 /* eslint-disable no-nested-ternary */
-import React, { Fragment, useCallback, useEffect, useState } from 'react'
+import React, { Fragment, useCallback, useEffect, useRef, useState } from 'react'
 
 import './timeLeftUntilNextSyncSettingStyle.css'
 
 function TimeLeftUntilNextSyncSetting(props: { helpText: { props: { text: string } } }) {
     //eslint-disable-next-line no-process-env
     const apiURL = process.env.MM_PLUGIN_API_URL;
+    const RETRYTIMEINSECONDS = 10 * 1000;
+
     const [loading, setLoading] = useState(false);
     const [hasError, setHasError] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
@@ -22,6 +24,9 @@ function TimeLeftUntilNextSyncSetting(props: { helpText: { props: { text: string
     const [fetchInterval, setFetchInterval] = useState(0);
     const [isSyncing, setIsSyncing] = useState<boolean>();
     const [countDown, setCountDown] = useState(0);
+    const [reRunEvent, setReRunEvent] = useState(false);
+
+    const eventSource = useRef<EventSource>();
 
     const syncWithServer = useCallback(async () => {
         const fetchOptions = {
@@ -72,21 +77,37 @@ function TimeLeftUntilNextSyncSetting(props: { helpText: { props: { text: string
 
         firstRun();
 
-        const eventSource = new EventSource(`${apiURL}/sync/is_started`, {withCredentials: true});
+        if (eventSource.current) {
+            eventSource.current.close();
+        }
 
-        eventSource.onmessage = (event) => {
+        let interval:NodeJS.Timer;
+
+        eventSource.current = new EventSource(`${apiURL}/sync/is_started`, {withCredentials: true});
+
+        eventSource.current.onmessage = (event) => {
             const isSyncingTemp = event.data === 'True'; // convert to bool
 
             // console.log('Counter started ', isSyncingTemp);
 
-            setIsSyncing(isSyncingTemp);
+            setIsSyncing((previousValue) => {
+                return previousValue === isSyncingTemp ? previousValue : isSyncingTemp;
+            });
         };
-        eventSource.onerror = (error) => {
-            console.error('Sync SSE Error:', error);
+        eventSource.current.onerror = (error) => {
+            // console.error('Sync SSE Error:', error);
 
-            eventSource.close();
+            eventSource.current?.close();
+
+            interval = setInterval(async () => {
+                setReRunEvent((previousValue) => {
+                    return !previousValue;
+                });
+            }, RETRYTIMEINSECONDS);
         };
-    }, []);
+
+        return () => clearInterval(interval);
+    }, [reRunEvent, eventSource]);
 
     useEffect(() => {
         console.log('LastFetchTime: ', lastFetchTime);
