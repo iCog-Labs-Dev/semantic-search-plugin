@@ -6,7 +6,7 @@ This repo is for a mattermost plugin that utilizes semantic search to find topic
 
 1. Clone the repo
 ```
-git clone https://github.com/iCog-Labs-Dev/semantic-search-plugin.git
+git clone https://github.com/iCog-Labs-Dev/semantic-search-plugin.git && git checkout temp/deploy
 ```
 2. Copy environment variable
 ```
