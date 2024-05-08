@@ -15,8 +15,9 @@ function PersonalAccessTokenSetting(props: { helpText: { props: { text: string }
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
+                'ngrok-skip-browser-warning': true,
             },
-            credentials: 'include',
+             
         };
         try {
             const api = `${apiURL}/settings/get_pat`;
@@ -56,8 +57,9 @@ function PersonalAccessTokenSetting(props: { helpText: { props: { text: string }
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
+                'ngrok-skip-browser-warning': true,
             },
-            credentials: 'include',
+             
             body: JSON.stringify(reqObj),
         };
 

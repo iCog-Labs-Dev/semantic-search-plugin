@@ -36,8 +36,9 @@ function TimeLeftUntilNextSyncSetting(props: { helpText: { props: { text: string
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
+                'ngrok-skip-browser-warning': true,
             },
-            credentials: 'include',
+             
         };
 
         setLoading(true);
@@ -86,7 +87,7 @@ function TimeLeftUntilNextSyncSetting(props: { helpText: { props: { text: string
 
         let interval:NodeJS.Timer;
 
-        eventSource.current = new EventSource(`${apiURL}/sync/is_started`, {withCredentials: true});
+        eventSource.current = new EventSource(`${apiURL}/sync/is_started`);
 
         eventSource.current.onmessage = (event) => {
             const isSyncingTemp = event.data === 'True'; // convert to bool
@@ -119,7 +120,7 @@ function TimeLeftUntilNextSyncSetting(props: { helpText: { props: { text: string
 
         let interval:NodeJS.Timer;
 
-        eventSourceProgress.current = new EventSource(`${apiURL}/sync/is_inprogress`, {withCredentials: true});
+        eventSourceProgress.current = new EventSource(`${apiURL}/sync/is_inprogress`);
 
         eventSourceProgress.current.onmessage = (event) => {
             const isInProgressTemp = event.data === 'True'; // convert to bool

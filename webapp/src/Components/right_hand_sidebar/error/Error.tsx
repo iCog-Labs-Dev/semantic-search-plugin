@@ -13,6 +13,9 @@ function Error({error} : any) {
             try {
                 response = await fetch(`${apiURL}/root/ping`, {
                     method: 'HEAD',
+                    headers: {
+                        'ngrok-skip-browser-warning': true,
+                    }
                 });
             } catch (err) {
                 // eslint-disable-next-line no-console

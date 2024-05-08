@@ -49,8 +49,9 @@ function Result({item} : any) {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
+                'ngrok-skip-browser-warning': true,
             },
-            credentials: 'include',
+             
         };
 
         const response = await fetch(api, fetchOptions);
@@ -62,17 +63,21 @@ function Result({item} : any) {
 
     useEffect(() => {
         const updateContext = async () => {
-            if (item.context.length > 0) {
-                item.context = await Promise.all(item.context.map(async (contextItem: any) => {
-                    if (contextItem.source === 'mm') {
-                        const imgUrl = await getAvatarUrl(contextItem.user_id);
-                        contextItem.user_avatar = imgUrl;
-                    }
-
-                    return contextItem;
-                }));
-
-                setIsBusy(false);
+            try{
+                if (item.context.length > 0) {
+                    item.context = await Promise.all(item.context.map(async (contextItem: any) => {
+                        if (contextItem.source === 'mm') {
+                            const imgUrl = await getAvatarUrl(contextItem.user_id);
+                            contextItem.user_avatar = imgUrl;
+                        }
+    
+                        return contextItem;
+                    }));
+    
+                    setIsBusy(false);
+                }
+            } catch(err) {
+                console.log(err)
             }
         };
 
@@ -86,9 +91,9 @@ function Result({item} : any) {
         >
             <div className='ss-response-container'>
                 {/* <i className='icon icon-check-circle-outline'/> */}
-                <ReactMarkdown className='ss-response-container_text'>{ item.text }</ReactMarkdown>
+                <ReactMarkdown className='ss-response-container_text'>{ item ? item.text : '**Something went wrong!**' }</ReactMarkdown>
             </div>
-            {item.context.length > 0 && !isBusy ? <div className='ss-response-context-wrapper'>
+            { item.context !== undefined && item.context.length > 0 && !isBusy ? <div className='ss-response-context-wrapper'>
 
                 <h3 className='ss-response-context-subtitle'> {'Context:'} </h3>
                 <div className='ss-response-context-container'>

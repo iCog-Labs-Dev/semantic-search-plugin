@@ -31,8 +31,9 @@ function ToggleSyncSetting(props: { helpText: { props: { text: string } } }) {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
+                    'ngrok-skip-browser-warning': true,
                 },
-                credentials: 'include',
+                 
             };
 
             setLoading(true);
@@ -75,7 +76,7 @@ function ToggleSyncSetting(props: { helpText: { props: { text: string } } }) {
 
         let interval:NodeJS.Timer;
 
-        eventSource.current = new EventSource(`${apiURL}/sync/is_started`, {withCredentials: true});
+        eventSource.current = new EventSource(`${apiURL}/sync/is_started`);
 
         eventSource.current.onmessage = (event) => {
             const isSyncingTemp = event.data === 'True'; // convert to bool
@@ -145,8 +146,9 @@ function ToggleSyncSetting(props: { helpText: { props: { text: string } } }) {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
+                'ngrok-skip-browser-warning': true,
             },
-            credentials: 'include',
+             
 
             // body: JSON.stringify(postObj),
         };
@@ -166,7 +168,7 @@ function ToggleSyncSetting(props: { helpText: { props: { text: string } } }) {
         }
 
         if (response?.ok) {
-            const eventSourcePercentage = new EventSource(`${apiURL}/sync/sync_percentage`, {withCredentials: true});
+            const eventSourcePercentage = new EventSource(`${apiURL}/sync/sync_percentage`);
 
             eventSourcePercentage.onmessage = (event) => {
                 console.log('Sync progress... ', event.data);
@@ -204,8 +206,9 @@ function ToggleSyncSetting(props: { helpText: { props: { text: string } } }) {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
+                'ngrok-skip-browser-warning': true,
             },
-            credentials: 'include',
+             
         };
 
         let response;

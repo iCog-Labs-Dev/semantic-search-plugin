@@ -19,7 +19,7 @@ function IsEngineOnlineSetting() {
 
         let interval:NodeJS.Timer;
 
-        eventSource.current = new EventSource(`${apiURL}/sync/is_started`, {withCredentials: true});
+        eventSource.current = new EventSource(`${apiURL}/sync/is_started`);
 
         eventSource.current.onmessage = (event) => {
             // console.log('Online...');

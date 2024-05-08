@@ -60,8 +60,9 @@ function RHS({
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
+                'ngrok-skip-browser-warning': true,
             },
-            credentials: 'include',
+             
             body: JSON.stringify({
                 query: searchQuery,
                 user_id: currentUser,

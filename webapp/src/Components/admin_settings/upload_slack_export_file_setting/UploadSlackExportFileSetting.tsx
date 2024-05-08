@@ -57,10 +57,11 @@ function UploadSlackExportFileSetting(props: { helpText: { props: { text: string
 
             // DO NOT set the Content-Type header. The browser will set it for you, including the boundary parameter.
 
-            // headers: {
-            //     'Content-Type': 'multipart/form-data',
-            // },
-            credentials: 'include',
+            headers: {
+                // 'Content-Type': 'multipart/form-data',
+                'ngrok-skip-browser-warning': true,
+            },
+             
             body: formData,
         };
 
@@ -324,8 +325,9 @@ function UploadSlackExportFileSetting(props: { helpText: { props: { text: string
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
+                'ngrok-skip-browser-warning': true,
             },
-            credentials: 'include',
+             
             body: JSON.stringify(postObj),
         };
 
@@ -350,7 +352,7 @@ function UploadSlackExportFileSetting(props: { helpText: { props: { text: string
         if (response?.ok) {
             setShowProgress(true);
             const api = `${apiURL}/slack/store_data_stream`;
-            const eventSource = new EventSource(api, {withCredentials: true});
+            const eventSource = new EventSource(api);
 
             eventSource.onmessage = (event) => {
                 console.log('Storing slack data... ', event.data);
