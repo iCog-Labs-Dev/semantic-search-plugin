@@ -53,8 +53,8 @@ function Home() {
 
     return (
         <div className='home-container'>
-            <h2>Searching for past conversations made easy!</h2>
-            <h4> Simply enter a topic, and our plugin will search through previous messages, providing you with the answer and the messages that support it. Start searching smarter today!</h4>
+            <h3>Semantic Search</h3>
+            <h6>Version 1.0</h6>
             {/* <button onClick={testFunc}>Test With Cred</button>
             <button onClick={testFunc2}>Test No Cred</button> */}
             {/* <a href='https://mm-backend.singularitynet.io/'>Test</a> */}
