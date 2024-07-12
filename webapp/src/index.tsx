@@ -23,12 +23,12 @@ export default class Plugin {
         const {
             id,
             toggleRHSPlugin,
-        } = registry.registerRightHandSidebarComponent(() => <RHSView store={store}/>, 'Semantic Search');
+        } = registry.registerRightHandSidebarComponent(() => <RHSView store={store}/>, 'Semantic Search v1.0');
 
         registry.registerChannelHeaderButtonAction(
-            <i className='icon fa fa-search'/>,
+            <i className='icon fa fa-rocket'/>,
             (): void => store.dispatch(toggleRHSPlugin),
-            'Semantic search',
+            'Semantic Search v1.0',
         );
 
         registry.registerAdminConsoleCustomSetting('isEngineOnline', IsEngineOnlineSetting);

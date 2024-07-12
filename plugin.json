@@ -1,6 +1,6 @@
 {
-    "id": "com.sing.semantic-search",
-    "name": "Mattermost Semantic Search",
+    "id": "com.sing.mm-semantic-search",
+    "name": "MM Semantic Search - v1.0",
     "description": "This plugin serves a semantic search functionality Mattermost messages.",
     "homepage_url": "https://github.com/mattermost/mattermost-plugin-starter-template",
     "support_url": "https://github.com/mattermost/mattermost-plugin-starter-template/issues",
